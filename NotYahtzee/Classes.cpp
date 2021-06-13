@@ -138,7 +138,7 @@ public:
 	void setdice(int numd)
 	{
 		//std::cout << "REMOVED" << alldice[numd];
-		alldice[0] = 0;
+		alldice[numd] = 0;
 		std::cout << "\n";
 
 	}

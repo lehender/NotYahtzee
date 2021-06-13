@@ -3,18 +3,17 @@ Started: 6-10-2021
 Not Yahtzee*/
 
 #include "Classes.cpp"
-int validateNumbers(int , scorecard);
 
-void playertaketurn(scorecard player)
+int validateNumbers(int , scorecard&);
+
+void playertaketurn(scorecard& player)
 {
 	int rolls = 2, inc = 0;
 	int held[] = { 0, 0, 0, 0, 0 };
-	int* importdice[5] = { 0, 0, 0, 0, 0 };
+
 	std::cout << "\nYOU ROLLED: \n";
 	player.roll();
 	player.displaydice();
-	player.setname("kyle"); std::cout << "\n";
-	player.getname(); std::cout << "\n";
 
 	std::cout << "\nRolls remaining: " << rolls;
 	std::cout << "\n\nEnter a number you want to keep from your dice, press enter to keep that number\nIf you want to stop entering numbers, enter 0\n";
@@ -22,7 +21,6 @@ void playertaketurn(scorecard player)
 
 	while(rolls > 0 && inc < 5)
 	{
-		importdice = player.getdice();
 
 		for (int i = 0; i < 5; i++)
 			std::cout << player.getdice()[i];
@@ -50,10 +48,10 @@ void playertaketurn(scorecard player)
 
 }
 
-int validateNumbers(int held, scorecard player)
+int validateNumbers(int held, scorecard& player)
 {
 	bool valid = false;
-	player.getname(); std::cout << "\n";
+
 	for(int i = 0; i < 5; i++)
 		if (held == player.getdice()[i]) {
 			valid = true;
