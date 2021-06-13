@@ -9,8 +9,9 @@ private:
 
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
-	int alldice[5] = {0,0,0,0,0};
-	int const numdice = sizeof(alldice)/ sizeof(alldice[0]); // This gets us the actual size of our array alldice (dividing the size in bytes by position of 0 byte)
+	int alldice[5] = { 0,0,0,0,0 };
+	int helddice[5] = { 0,0,0,0,0 };
+	int const numdice = sizeof(alldice) / sizeof(alldice[0]); // This gets us the actual size of our array alldice (dividing the size in bytes by position of 0 byte)
 	std::string name;
 
 public:
@@ -23,13 +24,8 @@ public:
 	void displaydice() // these show the dice in a nice easy to understand ASCII display
 	{
 
-		for (int i = 0; i < numdice; i++) // output dice top
-		{
-			std::cout << "  _____  ";
-		}
-
-		std::cout << std::endl;
-		for (int pass = 0; pass < 3; pass++)
+		std::cout << "YOUR ROLLED DICE" << std::endl;
+		for (int pass = 0; pass < 4; pass++)
 		{
 			for (int i = 0; i < numdice; i++) // output row 1 of all dice l > r
 			{
@@ -38,9 +34,12 @@ public:
 				case 1:
 					switch (pass) {
 					case 0:
-						std::cout << " |     | ";
+						std::cout << "  _____  ";
 						break;
 					case 1:
+						std::cout << " |     | ";
+						break;
+					case 2:
 						std::cout << " |  o  | ";
 						break;
 					default:
@@ -51,9 +50,12 @@ public:
 				case 2:
 					switch (pass) {
 					case 0:
-						std::cout << " |o    | ";
+						std::cout << "  _____  ";
 						break;
 					case 1:
+						std::cout << " |o    | ";
+						break;
+					case 2:
 						std::cout << " |     | ";
 						break;
 					default:
@@ -64,9 +66,12 @@ public:
 				case 3:
 					switch (pass) {
 					case 0:
-						std::cout << " |o    | ";
+						std::cout << "  _____  ";
 						break;
 					case 1:
+						std::cout << " |o    | ";
+						break;
+					case 2:
 						std::cout << " |  o  | ";
 						break;
 					default:
@@ -77,9 +82,12 @@ public:
 				case 4:
 					switch (pass) {
 					case 0:
-						std::cout << " |o   o| ";
+						std::cout << "  _____  ";
 						break;
 					case 1:
+						std::cout << " |o   o| ";
+						break;
+					case 2:
 						std::cout << " |     | ";
 						break;
 					default:
@@ -90,9 +98,12 @@ public:
 				case 5:
 					switch (pass) {
 					case 0:
-						std::cout << " |o   o| ";
+						std::cout << "  _____  ";
 						break;
 					case 1:
+						std::cout << " |o   o| ";
+						break;
+					case 2:
 						std::cout << " |  o  | ";
 						break;
 					default:
@@ -100,32 +111,150 @@ public:
 						break;
 					}
 					break;
-				default: // 6
+				case 6:
 					switch (pass) {
 					case 0:
-						std::cout << " |o   o| ";
+						std::cout << "  _____  ";
 						break;
 					case 1:
+						std::cout << " |o   o| ";
+						break;
+					case 2:
 						std::cout << " |o   o| ";
 						break;
 					default:
 						std::cout << " |o___o| ";
 						break;
 					}
+				default: // 6
 					break;
+
 				}
 			}
 			std::cout << std::endl;
 		}
 	}
 
+	void displayhelddice() // these show the dice in a nice easy to understand ASCII display
+	{
+
+		std::cout << "YOUR HELD DICE " << std::endl;
+		for (int pass = 0; pass < 4; pass++)
+		{
+			for (int i = 0; i < numdice; i++) // output row 1 of all dice l > r
+			{
+				switch (helddice[i])
+				{
+				case 1:
+					switch (pass) {
+					case 0:
+						color("red"); std::cout << "  _____  "; color("default");
+						break;
+					case 1:
+						color("red"); std::cout << " |     | "; color("default");
+						break;
+					case 2:
+						color("red"); std::cout << " |  o  | "; color("default");
+						break;
+					default:
+						color("red"); std::cout << " |_____| "; color("default");
+						break;
+					}
+					break;
+				case 2:
+					switch (pass) {
+					case 0:
+						color("red"); std::cout << "  _____  "; color("default");
+						break;
+					case 1:
+						color("red"); std::cout << " |o    | "; color("default");
+						break;
+					case 2:
+						color("red"); std::cout << " |     | "; color("default");
+						break;
+					default:
+						color("red"); std::cout << " |____o| "; color("default");
+						break;
+					}
+					break;
+				case 3:
+					switch (pass) {
+					case 0:
+						color("red"); std::cout << "  _____  "; color("default");
+						break;
+					case 1:
+						color("red"); std::cout << " |o    | "; color("default");
+						break;
+					case 2:
+						color("red"); std::cout << " |  o  | "; color("default");
+						break;
+					default:
+						color("red"); std::cout << " |____o| "; color("default");
+						break;
+					}
+					break;
+				case 4:
+					switch (pass) {
+					case 0:
+						color("red"); std::cout << "  _____  "; color("default");
+						break;
+					case 1:
+						color("red"); std::cout << " |o   o| "; color("default");
+						break;
+					case 2:
+						color("red"); std::cout << " |     | "; color("default");
+						break;
+					default:
+						color("red"); std::cout << " |o___o| "; color("default");
+						break;
+					}
+					break;
+				case 5:
+					switch (pass) {
+					case 0:
+						color("red"); std::cout << "  _____  "; color("default");
+						break;
+					case 1:
+						color("red"); std::cout << " |o   o| "; color("default");
+						break;
+					case 2:
+						color("red"); std::cout << " |  o  | "; color("default");
+						break;
+					default:
+						color("red"); std::cout << " |o___o| "; color("default");
+						break;
+					}
+					break;
+				case 6:
+					switch (pass) {
+					case 0:
+						color("red"); std::cout << "  _____  "; color("default");
+						break;
+					case 1:
+						color("red"); std::cout << " |o   o| "; color("default");
+						break;
+					case 2:
+						color("red"); std::cout << " |o   o| "; color("default");
+						break;
+					default:
+						color("red"); std::cout << " |o___o| "; color("default");
+						break;
+					}
+				default: // 6
+					break;
+
+				}
+			}
+			std::cout << std::endl;
+		}
+	}
 
 	void roll()
 	{
 		srand(time(NULL));
 
 		for (int i = 0; i < numdice; i++) {
-			//if(alldice[i] == 0)
+			if (helddice[i] == 0)
 				alldice[i] = (rand() % 6) + 1;
 		}
 	}
@@ -135,12 +264,23 @@ public:
 		return alldice;
 	}
 
+	int* gethelddice()
+	{
+		return helddice;
+	}
+
 	void setdice(int numd)
 	{
-		//std::cout << "REMOVED" << alldice[numd];
 		alldice[numd] = 0;
-		std::cout << "\n";
-
+	}
+	void sethelddice(int numd, int inc)
+	{
+		helddice[inc] = numd;
+	}
+	void resethelddice()
+	{
+		for (int i = 0; i < 5; i++)
+			helddice[i] = 0;
 	}
 
 	void getname()
@@ -151,9 +291,10 @@ public:
 	{
 		name = pname;
 	}
+
 	void color(std::string col)
 	{
-		if(col == "default")
+		if (col == "default")
 			SetConsoleTextAttribute(hConsole, 7);
 		if (col == "black")
 			SetConsoleTextAttribute(hConsole, 0);
@@ -163,6 +304,8 @@ public:
 			SetConsoleTextAttribute(hConsole, 4);
 		if (col == "teal")
 			SetConsoleTextAttribute(hConsole, 11);
+		if (col == "green")
+			SetConsoleTextAttribute(hConsole, 10);
 		if (col == "goldback")
 			SetConsoleTextAttribute(hConsole, 96);
 		if (col == "blueback")
@@ -171,54 +314,72 @@ public:
 			SetConsoleTextAttribute(hConsole, 224);
 		if (col == "greenback")
 			SetConsoleTextAttribute(hConsole, 160);
-		if(col == "test")
+		if (col == "grayback")
+			SetConsoleTextAttribute(hConsole, 129);
+		if (col == "redback")
+			SetConsoleTextAttribute(hConsole, 71);
+		if (col == "test")
 			for (int i = 0; i < 255; i++)
 			{
 				SetConsoleTextAttribute(hConsole, i);
-				std::cout << i << "THIS IS a test!!!"<< std::endl;
+				std::cout << i << "THIS IS a test!!!" << std::endl;
 			}
 	}
 };
 
-class scorecard:public player
+class scorecard :public player
 {
 private:
 	int totalup = 0, totallow = 0;
 
-	char tops[7] = { 'u', 'u', 'u', 'u', 'u', 'u', '0'};
-	char bottoms[7] = { 'u', 'u', 'u', 'u', 'u', 'u', 'u'};
+	char tops[7] = { 'u', 'u', 'u', 'u', 'u', 'u', '0' };
+	char bottoms[7] = { 'u', 'u', 'u', 'u', 'u', 'u', 'u' };
 
 public:
+
 	void displayscorecard()
 	{
 		int sleept = 10;
-		color("blueback"); std::cout << "\nNumber of 1s is: "; if (tops[0] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }else { std::cout << tops[0]; }color("black"); Sleep(sleept); std::cout << " " << std::endl;
-		color("blueback"); std::cout << "Number of 2s is: "; if (tops[1] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }else { std::cout << tops[1]; }color("default"); Sleep(sleept); std::cout << std::endl;
-		color("blueback"); std::cout << "Number of 3s is: "; if (tops[2] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }else { std::cout << tops[2]; }color("default"); Sleep(sleept); std::cout << std::endl;
-		color("blueback"); std::cout << "Number of 4s is: "; if (tops[3] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }else { std::cout << tops[3]; }color("default"); Sleep(sleept); std::cout << std::endl;
-		color("blueback"); std::cout << "Number of 5s is: "; if (tops[4] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }else { std::cout << tops[4]; }color("default"); Sleep(sleept); std::cout << std::endl;
-		color("blueback"); std::cout << "Number of 6s is: "; if (tops[5] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }else { std::cout << tops[5]; }color("default"); Sleep(sleept); std::cout << std::endl;
-		color("tanback"); std::cout << "BONUS if upper score is over 63: " << topbonus(); color("default"); Sleep(sleept); std::cout << std::endl;
-		color("tanback"); std::cout << "Total Upper Score: " << std::setw(15) << std::right << addtop(); color("default"); Sleep(sleept); std::cout << std::endl;
-		
-		color("blueback"); std::cout << "\nThree of a kind is: ";	if (bottoms[0] == 'u') { std::cout << std::setw(14) << std::right << "Open"; }else { std::cout << bottoms[0]; }color("black"); Sleep(sleept); std::cout << " "; color("default"); std::cout << std::endl;
-		color("blueback"); std::cout << "Four of a kind is: ";		if (bottoms[1] == 'u') { std::cout << std::setw(15) << std::right << "Open"; }else { std::cout << bottoms[1]; }color("default"); Sleep(sleept); std::cout << std::endl;
-		color("blueback"); std::cout << "Full House is: ";			if (bottoms[2] == 'u') { std::cout << std::setw(19) << std::right << "Open"; }else { std::cout << bottoms[2]; }color("default"); Sleep(sleept); std::cout << std::endl;
-		color("blueback"); std::cout << "Small(4) straight is: ";	if (bottoms[3] == 'u') { std::cout << std::setw(12) << std::right << "Open"; }else { std::cout << bottoms[3]; }color("default"); Sleep(sleept); std::cout << std::endl;
-		color("blueback"); std::cout << "Large(5) straight is: ";	if (bottoms[4] == 'u') { std::cout << std::setw(12) << std::right << "Open"; }else { std::cout << bottoms[4]; }color("default"); Sleep(sleept); std::cout << std::endl;
-		color("greenback"); std::cout << "YAHTZEE"; color("blueback"); std::cout << " (5 of a kind) is: ";	if (bottoms[5] == 'u') { std::cout << std::setw(8) << std::right << "Open"; }else { std::cout << bottoms[5]; }color("default"); Sleep(sleept); std::cout << std::endl;
-		color("blueback"); std::cout << "Chance (Add all 5 dice) is: "; if (bottoms[6] == 'u') { std::cout << std::setw(6) << std::right << "Open"; }else { std::cout << bottoms[6]; }color("default"); Sleep(sleept); std::cout << std::endl;
+		color("blueback"); std::cout << "\n(a)Number of 1s is: "; if (tops[0] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
+		else { std::cout << tops[0]; }color("black"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "(b)Number of 2s is: "; if (tops[1] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
+		else { std::cout << tops[1]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "(c)Number of 3s is: "; if (tops[2] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
+		else { std::cout << tops[2]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "(d)Number of 4s is: "; if (tops[3] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
+		else { std::cout << tops[3]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "(e)Number of 5s is: "; if (tops[4] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
+		else { std::cout << tops[4]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "(f)Number of 6s is: "; if (tops[5] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
+		else { std::cout << tops[5]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("tanback"); std::cout << "BONUS if upper score is over 63: " << topbonus(); color("default"); Sleep(sleept); std::cout << "\n";
+		color("tanback"); std::cout << "Total Upper Score: " << std::setw(15) << std::right << addtop(); color("default"); Sleep(sleept); std::cout << "\n";
 
-		color("tanback"); std::cout << "\nTotal of Lower Section is: " << std::setw(7) << std::right << addbottom(); color("black"); std::cout << " "; color("black"); Sleep(sleept); std::cout << std::endl;
-		color("tanback"); std::cout << "Total of Upper Section is: " << std::setw(7) << std::right << addtop(); color("default"); Sleep(sleept); std::cout << std::endl;
-		color("goldback"); std::cout << "GRAND TOTAL is: " << std::setw(10) << std::right << (addtop() + addbottom()); color("default"); Sleep(sleept); std::cout << std::endl << std::endl;
+		color("blueback"); std::cout << "\n(g)Three of a kind is: ";	if (bottoms[0] == 'u') { std::cout << std::setw(14) << std::right << "Open"; }
+		else { std::cout << bottoms[0]; }color("black"); Sleep(sleept); std::cout << " "; color("default"); std::cout << "\n";
+		color("blueback"); std::cout << "(h)Four of a kind is: ";		if (bottoms[1] == 'u') { std::cout << std::setw(15) << std::right << "Open"; }
+		else { std::cout << bottoms[1]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "(i)Full House is: ";			if (bottoms[2] == 'u') { std::cout << std::setw(19) << std::right << "Open"; }
+		else { std::cout << bottoms[2]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "(j)Small(4) straight is: ";	if (bottoms[3] == 'u') { std::cout << std::setw(12) << std::right << "Open"; }
+		else { std::cout << bottoms[3]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "(k)Large(5) straight is: ";	if (bottoms[4] == 'u') { std::cout << std::setw(12) << std::right << "Open"; }
+		else { std::cout << bottoms[4]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("greenback"); std::cout << "(l)YAHTZEE"; color("blueback"); std::cout << " (5 of a kind) is: ";	if (bottoms[5] == 'u') { std::cout << std::setw(8) << std::right << "Open"; }
+		else { std::cout << bottoms[5]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "(m)Chance (Add all 5 dice) is: "; if (bottoms[6] == 'u') { std::cout << std::setw(6) << std::right << "Open"; }
+		else { std::cout << bottoms[6]; }color("default"); Sleep(sleept); std::cout << "\n";
+
+		color("tanback"); std::cout << "\nTotal of Lower Section is: " << std::setw(7) << std::right << addbottom(); color("black"); std::cout << " "; color("black"); Sleep(sleept); std::cout << "\n";
+		color("tanback"); std::cout << "Total of Upper Section is: " << std::setw(7) << std::right << addtop(); color("default"); Sleep(sleept); std::cout << "\n";
+		color("goldback"); std::cout << "GRAND TOTAL is: " << std::setw(10) << std::right << (addtop() + addbottom()); color("default"); Sleep(sleept); std::cout << std::endl << "\n";
 	}
 
 	int addtop()
 	{
 		for (int i = 0; i < 7; i++)
 		{
-			if (tops[i] != 'u' && tops[i] != '0' )
+			if (tops[i] != 'u' && tops[i] != '0')
 				totalup += tops[i];
 		}
 		return totalup;
@@ -236,11 +397,11 @@ public:
 
 	int topbonus()
 	{
-		if (addtop() > 63){
+		if (addtop() > 63) {
 			tops[6] = 35;
 			return 35;
 		}
-			
+
 		else
 			return 0;
 	}
