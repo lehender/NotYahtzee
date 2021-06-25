@@ -254,9 +254,18 @@ public:
 		srand(time(NULL));
 
 		for (int i = 0; i < numdice; i++) {
-			if (helddice[i] == 0)
+			
+			if (helddice[i] == 0) {
+				// std::cout << "NHELD" << helddice[i] << std::endl;
 				alldice[i] = (rand() % 6) + 1;
+				std::cin.clear(); // std::cin.ignore();
+			}
+			else
+				alldice[i] = 0;
 		}
+		//for (int i = 0; i < numdice; i++) {
+		//	std::cout << "OILL" << alldice[i] << std::endl;
+		//}
 	}
 
 	int* getdice()
@@ -340,35 +349,35 @@ public:
 	void displayscorecard()
 	{
 		int sleept = 10;
-		color("blueback"); std::cout << "\n(a)Number of 1s is: "; if (tops[0] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
-		else { std::cout << tops[0]; }color("black"); Sleep(sleept); std::cout << "\n";
-		color("blueback"); std::cout << "(b)Number of 2s is: "; if (tops[1] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
-		else { std::cout << tops[1]; }color("default"); Sleep(sleept); std::cout << "\n";
-		color("blueback"); std::cout << "(c)Number of 3s is: "; if (tops[2] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
-		else { std::cout << tops[2]; }color("default"); Sleep(sleept); std::cout << "\n";
-		color("blueback"); std::cout << "(d)Number of 4s is: "; if (tops[3] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
-		else { std::cout << tops[3]; }color("default"); Sleep(sleept); std::cout << "\n";
-		color("blueback"); std::cout << "(e)Number of 5s is: "; if (tops[4] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
-		else { std::cout << tops[4]; }color("default"); Sleep(sleept); std::cout << "\n";
-		color("blueback"); std::cout << "(f)Number of 6s is: "; if (tops[5] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
-		else { std::cout << tops[5]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "\n(1)Number of 1s is: "; if (tops[0] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
+		else { std::cout << (int)tops[0]; }color("black"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "(2)Number of 2s is: "; if (tops[1] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
+		else { std::cout << (int)tops[1]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "(3)Number of 3s is: "; if (tops[2] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
+		else { std::cout << (int)tops[2]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "(4)Number of 4s is: "; if (tops[3] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
+		else { std::cout << (int)tops[3]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "(5)Number of 5s is: "; if (tops[4] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
+		else { std::cout << (int)tops[4]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "(6)Number of 6s is: "; if (tops[5] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
+		else { std::cout << (int)tops[5]; }color("default"); Sleep(sleept); std::cout << "\n";
 		color("tanback"); std::cout << "BONUS if upper score is over 63: " << topbonus(); color("default"); Sleep(sleept); std::cout << "\n";
 		color("tanback"); std::cout << "Total Upper Score: " << std::setw(15) << std::right << addtop(); color("default"); Sleep(sleept); std::cout << "\n";
 
-		color("blueback"); std::cout << "\n(g)Three of a kind is: ";	if (bottoms[0] == 'u') { std::cout << std::setw(14) << std::right << "Open"; }
-		else { std::cout << bottoms[0]; }color("black"); Sleep(sleept); std::cout << " "; color("default"); std::cout << "\n";
-		color("blueback"); std::cout << "(h)Four of a kind is: ";		if (bottoms[1] == 'u') { std::cout << std::setw(15) << std::right << "Open"; }
-		else { std::cout << bottoms[1]; }color("default"); Sleep(sleept); std::cout << "\n";
-		color("blueback"); std::cout << "(i)Full House is: ";			if (bottoms[2] == 'u') { std::cout << std::setw(19) << std::right << "Open"; }
-		else { std::cout << bottoms[2]; }color("default"); Sleep(sleept); std::cout << "\n";
-		color("blueback"); std::cout << "(j)Small(4) straight is: ";	if (bottoms[3] == 'u') { std::cout << std::setw(12) << std::right << "Open"; }
-		else { std::cout << bottoms[3]; }color("default"); Sleep(sleept); std::cout << "\n";
-		color("blueback"); std::cout << "(k)Large(5) straight is: ";	if (bottoms[4] == 'u') { std::cout << std::setw(12) << std::right << "Open"; }
-		else { std::cout << bottoms[4]; }color("default"); Sleep(sleept); std::cout << "\n";
-		color("greenback"); std::cout << "(l)YAHTZEE"; color("blueback"); std::cout << " (5 of a kind) is: ";	if (bottoms[5] == 'u') { std::cout << std::setw(8) << std::right << "Open"; }
-		else { std::cout << bottoms[5]; }color("default"); Sleep(sleept); std::cout << "\n";
-		color("blueback"); std::cout << "(m)Chance (Add all 5 dice) is: "; if (bottoms[6] == 'u') { std::cout << std::setw(6) << std::right << "Open"; }
-		else { std::cout << bottoms[6]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "\n(a)Three of a kind is: ";	if (bottoms[0] == 'u') { std::cout << std::setw(14) << std::right << "Open"; }
+		else { std::cout << (int)bottoms[0]; }color("black"); Sleep(sleept); std::cout << " "; color("default"); std::cout << "\n";
+		color("blueback"); std::cout << "(b)Four of a kind is: ";		if (bottoms[1] == 'u') { std::cout << std::setw(15) << std::right << "Open"; }
+		else { std::cout << (int)bottoms[1]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "(c)Full House is: ";			if (bottoms[2] == 'u') { std::cout << std::setw(19) << std::right << "Open"; }
+		else { std::cout << (int)bottoms[2]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "(d)Small(4) straight is: ";	if (bottoms[3] == 'u') { std::cout << std::setw(12) << std::right << "Open"; }
+		else { std::cout << (int)bottoms[3]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "(e)Large(5) straight is: ";	if (bottoms[4] == 'u') { std::cout << std::setw(12) << std::right << "Open"; }
+		else { std::cout << (int)bottoms[4]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("greenback"); std::cout << "(f)YAHTZEE"; color("blueback"); std::cout << " (5 of a kind) is: ";	if (bottoms[5] == 'u') { std::cout << std::setw(8) << std::right << "Open"; }
+		else { std::cout << (int)bottoms[5]; }color("default"); Sleep(sleept); std::cout << "\n";
+		color("blueback"); std::cout << "(g)Chance (Add all 5 dice) is: "; if (bottoms[6] == 'u') { std::cout << std::setw(6) << std::right << "Open"; }
+		else { std::cout << (int)bottoms[6]; }color("default"); Sleep(sleept); std::cout << "\n";
 
 		color("tanback"); std::cout << "\nTotal of Lower Section is: " << std::setw(7) << std::right << addbottom(); color("black"); std::cout << " "; color("black"); Sleep(sleept); std::cout << "\n";
 		color("tanback"); std::cout << "Total of Upper Section is: " << std::setw(7) << std::right << addtop(); color("default"); Sleep(sleept); std::cout << "\n";
@@ -377,20 +386,22 @@ public:
 
 	int addtop()
 	{
+		totalup = 0;
 		for (int i = 0; i < 7; i++)
 		{
 			if (tops[i] != 'u' && tops[i] != '0')
-				totalup += tops[i];
+				totalup += (int)tops[i];
 		}
 		return totalup;
 	}
 
 	int addbottom()
 	{
+		totallow = 0;
 		for (int i = 0; i < 7; i++)
 		{
 			if (bottoms[i] != 'u')
-				totallow += bottoms[i];
+				totallow += (int)bottoms[i];
 		}
 		return totallow;
 	}
@@ -404,5 +415,10 @@ public:
 
 		else
 			return 0;
+	}
+
+	void setscoretop(int pos, int score)
+	{
+		tops[pos] = score;
 	}
 };

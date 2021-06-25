@@ -10,7 +10,7 @@ bool rerollorEnterScore(scorecard&, int&);
 void goofyrollsremaining(scorecard, int);
 void fillscore(scorecard&);
 
-int numberofx(scorecard, int num); // for score validation
+int numberofx(scorecard&, int num); // for score validation
 
 void playertaketurn(scorecard& player)
 {
@@ -56,23 +56,25 @@ void goofyrollsremaining(scorecard pl, int rolls)
 void choosehand(scorecard& player, int rolls, int& inc)
 {
 
-	int holding[] = { 0, 0, 0, 0, 0, 0 };
+	int holding[] = { 0, 0, 0, 0, 0, 0};
 
 	while (inc <= 5)
 	{
 
 		player.displaydice();
-		if (inc >= 1 || rolls < 2)
+		if (inc >= 1 || rolls < 2) // check if first roll, aka No held dice to show only blank space
 			player.displayhelddice();
 
-		std::cout << "\nINPUT: ";
-		std::cin >> holding[inc];
+		std::cout << "\nINPUT: "; // ask user for input
+		std::cin >> holding[inc]; // inc 0, default first position
 
-		if (holding[inc] == 0)
-			break;
-		holding[inc] = validateNumbers(holding[inc], player);
-		if (holding[inc] != 0) {
-			player.sethelddice(holding[inc], inc);
+		if (holding[inc] == 0) // if holding inc is 0, we dont enter any more values
+			break; // exits while (inc <= 5) and returns to parent function, playertaketurn while loop
+		else {
+			holding[inc] = validateNumbers(holding[inc], player); // this makes sure the number is valid
+			if (holding[inc] != 0) {
+				player.sethelddice(holding[inc], inc);
+			}
 			inc++;
 		}
 	}
@@ -117,6 +119,7 @@ void fillscore(scorecard& pl)
 {
 	char choice;
 	bool choosing = true;
+	int score;
 	while (choosing)
 	{
 		pl.displayscorecard();
@@ -124,37 +127,56 @@ void fillscore(scorecard& pl)
 		std::cin >> choice;
 		switch (tolower(choice))
 		{
-		case 'a': // Number of 1s is:
-			numberofx(pl, 1);
+		case '1': // Number of 1s is:
+			score = numberofx(pl, 1);
+			pl.setscoretop(0, score);
+			choosing = false;
 			break;
-		case 'b': // Number of 2s is:
-			numberofx(pl, 2);
+		case '2': // Number of 2s is:
+			score = numberofx(pl, 2);
+			pl.setscoretop(1, score);
+			choosing = false;
 			break;
-		case 'c': // Number of 3s is:
-			numberofx(pl, 3);
+		case '3': // Number of 3s is:
+			score = numberofx(pl, 3);
+			pl.setscoretop(2, score);
+			choosing = false;
 			break;
-		case 'd': // Number of 4s is:
-			numberofx(pl, 4);
+		case '4': // Number of 4s is:
+			score = numberofx(pl, 4);
+			pl.setscoretop(3, score);
+			choosing = false;
 			break;
-		case 'e': // Number of 5s is:
-			numberofx(pl, 5);
+		case '5': // Number of 5s is:
+			score = numberofx(pl, 5);
+			pl.setscoretop(4, score);
+			choosing = false;
 			break;
-		case 'f': // Number of 6s is:
-			numberofx(pl, 6);
+		case '6': // Number of 6s is:
+			score = numberofx(pl, 6);
+			pl.setscoretop(5, score);
+			choosing = false;
 			break;
-		case 'g': // 3 of a kind
+		case 'a': // 3 of a kind
+			choosing = false;
 			break;
-		case 'h': // 4 of a kind
+		case 'b': // 4 of a kind
+			choosing = false;
 			break;
-		case 'i': // full house
+		case 'c': // full house
+			choosing = false;
 			break;
-		case 'j': // sm straight
+		case 'd': // sm straight
+			choosing = false;
 			break;
-		case 'k': // lg straight
+		case 'e': // lg straight
+			choosing = false;
 			break;
-		case 'l': // YAHTZEE
+		case 'f': // YAHTZEE
+			choosing = false;
 			break;
-		case 'm': // chance
+		case 'g': // chance
+			choosing = false;
 			break;
 		default:
 			std::cout << "Please make a valid entry" << std::endl;
@@ -163,25 +185,27 @@ void fillscore(scorecard& pl)
 	}
 }
 
-int numberofx(scorecard pl, int num)
+int numberofx(scorecard& pl, int num)
 {
-	int score = 0;
+	int score = 0, inc = 0;
 	char choice;
 	bool confirm = true;
 
 	for (int i = 0; i < 5; i++)
 	{
-		if (pl.gethelddice()[i] == num)
+		if (pl.gethelddice()[i] == num || pl.getdice()[i] == num){	 // this check if held OR REMAINING dice are equal to the score being checked against. 
 			score += num;
+			inc++;
+		}
 	}
 
 	while (confirm) {
-		std::cout << "You want to enter " << score << " as your score?(y/n): ";
+		std::cout << "You have " << inc << " " << num << "'s\nYou want to enter " << score << " as your score ? (y / n) : ";
 		std::cin >> choice;
 		switch (tolower(choice))
 		{
 		case 'y':
-			std::cout << "Please enter a valid entry" << std::endl;
+			std::cout << score << " added to " << num << std::endl;
 			return score;
 		case 'n':
 			std::cout << "Please enter a valid entry" << std::endl;
@@ -198,10 +222,10 @@ int validateNumbers(int held, scorecard& player)
 	bool valid = false;
 
 	for (int i = 0; i < 5; i++)
-		if (held == player.getdice()[i]) {
+		if (held == player.getdice()[i]) { // if the number the player chooses, is a number that is in the dice then its true
 			valid = true;
-			player.setdice(i);
-			break;
+			player.setdice(i); // this sets the dice in the position that matches the number the player holds to 0
+			break; // if we find 1, we dont want to continue going through and finding duplicates, only 1
 		}
 	if (valid == false) {
 		std::cout << "\nEnter a number that matches one of your dice\n";
@@ -213,7 +237,7 @@ int validateNumbers(int held, scorecard& player)
 	}
 	if (valid == true) {
 		Sleep(250);
-		return held;
+		return held; // returns value since it is in the rolled dice array
 	}
 }
 
