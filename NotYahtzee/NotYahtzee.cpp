@@ -10,7 +10,8 @@ bool rerollorEnterScore(scorecard&, int&);
 void goofyrollsremaining(scorecard, int);
 void fillscore(scorecard&);
 
-int numberofx(scorecard&, int num); // for score validation
+int numberofx(scorecard&, int); // for score validation
+void xOfaKind(scorecard&, int);
 
 void playertaketurn(scorecard& player)
 {
@@ -158,9 +159,11 @@ void fillscore(scorecard& pl)
 			choosing = false;
 			break;
 		case 'a': // 3 of a kind
+			xOfaKind(pl, 3);
 			choosing = false;
 			break;
 		case 'b': // 4 of a kind
+			xOfaKind(pl, 4);
 			choosing = false;
 			break;
 		case 'c': // full house
@@ -214,6 +217,31 @@ int numberofx(scorecard& pl, int num)
 			std::cout << "Please enter a valid entry" << std::endl;
 			break;
 		}
+	}
+}
+
+void xOfaKind(scorecard& pl, int num)
+{
+	int count;
+
+	if (num == 3)
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			std::cout << "COUNT!" << std::count(pl.getdice(), pl.getdice() + 5, i) << std::endl;
+			count = std::count(pl.getdice(), pl.getdice() + 5, i);
+			if (count >= 3) {
+				std::cout << "Youre GOOD WIth a TOTAL of " << i * count << std::endl;
+				break;
+			}
+			else
+				std::cout << "Youre NOT good!" << std::endl;
+		}
+
+	}
+	else if (num == 4)
+	{
+
 	}
 }
 
