@@ -255,16 +255,15 @@ public:
 		srand(time(NULL));
 
 		for (int i = 0; i < numdice; i++) {
-			
+			// std::cout << "NHELD" << helddice[i] << std::endl; // DEBUG
 			if (helddice[i] == 0) {
-				// std::cout << "NHELD" << helddice[i] << std::endl;
 				alldice[i] = (rand() % 6) + 1;
-				std::cin.clear(); // std::cin.ignore();
+				std::cin.clear(); 
 			}
 			else
 				alldice[i] = 0;
 		}
-		//for (int i = 0; i < numdice; i++) {
+		//for (int i = 0; i < numdice; i++) { // DEBUG
 		//	std::cout << "OILL" << alldice[i] << std::endl;
 		//}
 	}

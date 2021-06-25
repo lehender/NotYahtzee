@@ -59,7 +59,7 @@ void choosehand(scorecard& player, int rolls, int& inc)
 
 	int holding[] = { 0, 0, 0, 0, 0, 0};
 
-	while (inc <= 5)
+	while (inc <= 5 && rolls != 0)
 	{
 
 		player.displaydice();
@@ -78,6 +78,17 @@ void choosehand(scorecard& player, int rolls, int& inc)
 			}
 			inc++;
 		}
+	}
+	if (rolls == 0)
+	{
+		for (int i = 0; i < 5; i++)
+			if (player.getdice()[i] != 0)
+				for (int j = 0; j < 5; j++)
+					if (player.gethelddice()[j] == 0) {
+						player.sethelddice(player.getdice()[i], j);
+						player.setdice(i);
+					}
+		player.displayhelddice();
 	}
 }
 
@@ -130,56 +141,77 @@ void fillscore(scorecard& pl)
 		{
 		case '1': // Number of 1s is:
 			score = numberofx(pl, 1);
-			pl.setscoretop(0, score);
-			choosing = false;
+			if (score != 99) {
+				choosing = false;
+				pl.setscoretop(0, score);
+			}
 			break;
 		case '2': // Number of 2s is:
 			score = numberofx(pl, 2);
-			pl.setscoretop(1, score);
-			choosing = false;
+			if (score != 99) {
+				choosing = false;
+				pl.setscoretop(1, score);
+			}
 			break;
 		case '3': // Number of 3s is:
 			score = numberofx(pl, 3);
-			pl.setscoretop(2, score);
-			choosing = false;
+			if (score != 99) {
+				choosing = false;
+				pl.setscoretop(2, score);
+			}
 			break;
 		case '4': // Number of 4s is:
 			score = numberofx(pl, 4);
-			pl.setscoretop(3, score);
-			choosing = false;
+			if (score != 99) {
+				choosing = false;
+				pl.setscoretop(3, score);
+			}
 			break;
 		case '5': // Number of 5s is:
 			score = numberofx(pl, 5);
-			pl.setscoretop(4, score);
-			choosing = false;
+			if (score != 99) {
+				choosing = false;
+				pl.setscoretop(4, score);
+			}
 			break;
 		case '6': // Number of 6s is:
 			score = numberofx(pl, 6);
-			pl.setscoretop(5, score);
-			choosing = false;
+			if (score != 99) {
+				choosing = false;
+				pl.setscoretop(5, score);
+			}
 			break;
 		case 'a': // 3 of a kind
 			xOfaKind(pl, 3);
-			choosing = false;
+			if (score != 99) {
+				choosing = false;
+				pl.setscoretop(6, score);
+			}
 			break;
 		case 'b': // 4 of a kind
 			xOfaKind(pl, 4);
-			choosing = false;
+			if (score != 99)
+				choosing = false;
 			break;
 		case 'c': // full house
-			choosing = false;
+			if (score != 99)
+				choosing = false;
 			break;
 		case 'd': // sm straight
-			choosing = false;
+			if (score != 99)
+				choosing = false;
 			break;
 		case 'e': // lg straight
-			choosing = false;
+			if (score != 99)
+				choosing = false;
 			break;
 		case 'f': // YAHTZEE
-			choosing = false;
+			if (score != 99)
+				choosing = false;
 			break;
 		case 'g': // chance
-			choosing = false;
+			if (score != 99)
+				choosing = false;
 			break;
 		default:
 			std::cout << "Please make a valid entry" << std::endl;
@@ -211,8 +243,8 @@ int numberofx(scorecard& pl, int num)
 			std::cout << score << " added to " << num << std::endl;
 			return score;
 		case 'n':
-			std::cout << "Please enter a valid entry" << std::endl;
-			return 0;
+			std::cout << "Returning to score card." << std::endl;
+			return 99;
 		default:
 			std::cout << "Please enter a valid entry" << std::endl;
 			break;
@@ -275,7 +307,7 @@ int main()
 	bool playing = true;
 	int choice;
 
-player:scorecard play1;
+	player:scorecard play1;
 
 	play1.setname("Coolio");
 	play1.getname(); std::cout << "\n";
