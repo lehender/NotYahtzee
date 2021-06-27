@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <windows.h>
 
+
 class player
 {
 private:
