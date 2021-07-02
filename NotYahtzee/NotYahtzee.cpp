@@ -17,6 +17,8 @@ int numberofx(scorecard&, int); // for score validation // 1-6 hands
 int xOfaKind(scorecard&, int); // 3 and 4 of a kind
 int fullhouse(scorecard&); // fullhouse
 
+void titleshow();
+
 void playertaketurn(scorecard& player, int& turn, int numOfPlayers)
 {
 	int rolls = 2;
@@ -44,7 +46,7 @@ void playertaketurn(scorecard& player, int& turn, int numOfPlayers)
 	case 0:
 	case 1:
 	case 2:
-		if (turn < numOfPlayers)
+		if (turn < (numOfPlayers - 1))
 			turn++;
 		break;
 	default:
@@ -194,47 +196,20 @@ void fillscore(scorecard& pl)
 		switch (tolower(choice))
 		{
 		case '1': // Number of 1s is:
-			score = numberofx(pl, 1);
-			if (score != 99) {
-				choosing = false;
-				pl.setscoretop(0, score);
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+			if (pl.getscore(0, ((int)choice - 48))) {
+				score = numberofx(pl, ((int)choice - 48));
+				if (score != 99) {
+					choosing = false;
+					pl.setscoretop(0, score);
+				}
 			}
 			break;
-		case '2': // Number of 2s is:
-			score = numberofx(pl, 2);
-			if (score != 99) {
-				choosing = false;
-				pl.setscoretop(1, score);
-			}
-			break;
-		case '3': // Number of 3s is:
-			score = numberofx(pl, 3);
-			if (score != 99) {
-				choosing = false;
-				pl.setscoretop(2, score);
-			}
-			break;
-		case '4': // Number of 4s is:
-			score = numberofx(pl, 4);
-			if (score != 99) {
-				choosing = false;
-				pl.setscoretop(3, score);
-			}
-			break;
-		case '5': // Number of 5s is:
-			score = numberofx(pl, 5);
-			if (score != 99) {
-				choosing = false;
-				pl.setscoretop(4, score);
-			}
-			break;
-		case '6': // Number of 6s is:
-			score = numberofx(pl, 6);
-			if (score != 99) {
-				choosing = false;
-				pl.setscoretop(5, score);
-			}
-			break;
+	
 		case 'a': // 3 of a kind
 			score = xOfaKind(pl, 3);
 			if (score != 99) {
@@ -261,6 +236,7 @@ void fillscore(scorecard& pl)
 				choosing = false;
 			break;
 		case 'f': // YAHTZEE
+			score = xOfaKind(pl, 5);
 			if (score != 99)
 				choosing = false;
 			break;
@@ -343,8 +319,10 @@ int xOfaKind(scorecard& pl, int num)
 	{
 		for (int i = 1; i < 7; i++) // 1 to 7 to ecompass all dice options
 		{
-			// std::cout << "COUNT!" << std::count(pl.getdice(), pl.getdice() + 5, i) << std::endl; // DEBUG
-			count = std::count(pl.getdice(), pl.getdice() + 5, i);
+			// std::cout << "COUNT!" << std::count(pl.gethelddice(), pl.gethelddice() + 5, i) << std::endl; // DEBUG
+			count = std::count(pl.gethelddice(), pl.gethelddice() + 5, i);
+			count += std::count(pl.getdice(), pl.getdice() + 5, i);
+
 			if (count >= 3) {
 				while (confirm) {
 					std::cout << "You have " << count << " " << i << "'s in your hand.\n Add " << count * i << " to your score ? (y / n) : ";
@@ -363,11 +341,9 @@ int xOfaKind(scorecard& pl, int num)
 					}
 				}
 			}
-			else {
-				std::cout << "You don't have 3(or more) of a kind" << std::endl;
-				return 99;
-			}
 		}
+		std::cout << "You don't have 3(or more) of a kind" << std::endl;
+		return 99;
 
 	}
 	else if (num == 4)
@@ -375,7 +351,9 @@ int xOfaKind(scorecard& pl, int num)
 		for (int i = 1; i < 7; i++)
 		{
 			// std::cout << "COUNT!" << std::count(pl.getdice(), pl.getdice() + 5, i) << std::endl; // DEBUG
-			count = std::count(pl.getdice(), pl.getdice() + 5, i);
+			count = std::count(pl.gethelddice(), pl.gethelddice() + 5, i);
+			count += std::count(pl.getdice(), pl.getdice() + 5, i);
+
 			if (count >= 4) {
 				while (confirm) {
 					std::cout << "You have " << count << " " << i << "'s in your hand.\n Add " << count * i << " to your score ? (y / n) : ";
@@ -394,11 +372,39 @@ int xOfaKind(scorecard& pl, int num)
 					}
 				}
 			}
-			else{
-				std::cout << "You don't have 4(or more) of a kind" << std::endl;
-				return 99;
+		}
+		std::cout << "You don't have 4(or more) of a kind" << std::endl;
+		return 99;
+	}
+	else if (num == 5)
+	{
+		for (int i = 1; i < 7; i++)
+		{
+			// std::cout << "COUNT!" << std::count(pl.getdice(), pl.getdice() + 5, i) << std::endl; // DEBUG
+			count = std::count(pl.gethelddice(), pl.gethelddice() + 5, i);
+			count += std::count(pl.getdice(), pl.getdice() + 5, i);
+
+			if (count >= 4) {
+				while (confirm) {
+					std::cout << "You have a YAHTZEE!\n Add " << 50 << " to your score ? (y / n) : ";
+					std::cin >> choice;
+					switch (tolower(choice))
+					{
+					case 'y':
+						std::cout << score << " added to " << num << std::endl;
+						return 50;
+					case 'n':
+						std::cout << "Returning to score card." << std::endl;
+						return 99;
+					default:
+						std::cout << "Please enter a valid entry" << std::endl;
+						break;
+					}
+				}
 			}
 		}
+		std::cout << "You don't have a Yahtzee" << std::endl;
+		return 99;
 	}
 }
 
@@ -481,6 +487,29 @@ void PlayerGame(scorecard pl[], int& whosturn, int numOfPlayers )
 	}
 }
 
+void titleshow(scorecard t)
+{
+	std::cout << "Welcome to, Levi H's..." << std::endl;
+	Sleep(500);
+	t.color("red"); std::cout << "ooooo      ooo               .   "; t.color("default"); std::cout << std::endl;
+	std::cout << "`888b.     `8'             .o8   "; t.color("default"); std::cout << std::endl;
+	t.color("red"); std::cout << " 8 `88b.    8   .ooooo.  .o888oo "; t.color("default"); std::cout << std::endl;
+	std::cout << " 8   `88b.  8  d88' `88b   888   "; t.color("default"); std::cout << std::endl;
+	t.color("red"); std::cout << " 8     `88b.8  888   888   888   "; t.color("default"); std::cout << std::endl;
+	std::cout << " 8       `888  888   888   888 . "; t.color("default"); std::cout << std::endl;
+	t.color("red"); std::cout << "o8o        `8  `Y8bod8P'   {888/ "; t.color("default"); std::cout << std::endl;
+	std::cout << "" << std::endl;
+	t.color("red"); std::cout << "oooooo   oooo           oooo            .                                  .o. "; t.color("default"); std::cout << std::endl;
+	std::cout << " `888.   .8'            `888          .o8                                  888 "; t.color("default"); std::cout << std::endl;
+	t.color("red"); std::cout << "  `888. .8'    .oooo.    888 .oo.   .o888oo   oooooooo  .ooooo.   .ooooo.  888 "; t.color("default"); std::cout << std::endl;
+	std::cout << "   `888.8'    `P  )88b   888P^Y88b    888    d'/|7d8P  d88' `88b d88' `88b Y8P "; t.color("default"); std::cout << std::endl;
+	t.color("red"); std::cout << "    `888'      .oP^888   888   888    888      .d8P'   888ooo888 888ooo888 `8' "; t.color("default"); std::cout << std::endl;
+	std::cout << "     888      d8(  888   888   888    888 .  .d8P'  .P 888    .o 888    .o .o. "; t.color("default"); std::cout << std::endl;
+	t.color("red"); std::cout << "    o888o     `Y888/}8o o888o o888o   |888| d8888888P  `Y8bod8P' `Y8bod8P' Y8P "; t.color("default"); std::cout << std::endl;
+	std::cout << std::endl;
+	Sleep(500);
+
+}
 
 int main()
 {
@@ -489,8 +518,12 @@ int main()
 	scorecard play2;
 	scorecard play3;
 	scorecard play4;
+	scorecard title;
 
 	scorecard playerlist[4] = { play1, play2, play3, play4 };
+
+	titleshow(title);
+	Sleep(500);
 
 	playercount(playerlist);
 

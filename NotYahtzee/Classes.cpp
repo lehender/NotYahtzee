@@ -259,6 +259,7 @@ public:
 			// std::cout << "NHELD" << helddice[i] << std::endl; // DEBUG
 			if (helddice[i] == 0) {
 				alldice[i] = (rand() % 6) + 1;
+				// Sleep(5);
 				std::cin.clear(); 
 			}
 			else
@@ -266,7 +267,6 @@ public:
 		}
 		//for (int i = 0; i < numdice; i++) { // DEBUG
 		//	std::cout << "OILL" << alldice[i] << std::endl;
-		//}
 	}
 
 	int* getdice()
@@ -421,5 +421,40 @@ public:
 	void setscoretop(int pos, int score)
 	{
 		tops[pos] = score;
+	}
+
+	bool getscore(int topbot, int pos)
+	{
+		pos--;
+
+		switch (pos)
+		{
+		case 0:
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+		case 5:
+		case 6:
+			if (topbot == 0)
+				if (tops[pos] == 'u')
+					return true;
+				else {
+					std::cout << "You cannot enter a score in that position";
+					return false;
+				}
+					
+		case 7:
+			if (topbot == 1)
+				if (bottoms[pos] == 'u')
+					return true;
+			if (topbot == 0) {
+				std::cout << "You cannot enter a score in that position";
+				return false;
+			}
+		default:
+			std::cout << "You cannot enter a score in that position";
+			return false;
+		}
 	}
 };
