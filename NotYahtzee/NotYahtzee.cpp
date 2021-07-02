@@ -11,13 +11,13 @@ void goofyrollsremaining(scorecard, int);
 void fillscore(scorecard&);
 void removeDiceHeld(scorecard&);
 
-void onePlayerGame(scorecard&);
-void twoPlayerGame(scorecard&, scorecard&, int&);
+void PlayerGame(scorecard[], int&, int);
 
 int numberofx(scorecard&, int); // for score validation // 1-6 hands
 int xOfaKind(scorecard&, int); // 3 and 4 of a kind
+int fullhouse(scorecard&); // fullhouse
 
-void playertaketurn(scorecard& player, int& turn)
+void playertaketurn(scorecard& player, int& turn, int numOfPlayers)
 {
 	int rolls = 2;
 	int  inc = 0;
@@ -38,16 +38,19 @@ void playertaketurn(scorecard& player, int& turn)
 
 	}
 	fillscore(player);
-	if (turn == 0) {
-		turn = 1;
-		return;
-	}
-	if (turn == 1) {
-		turn = 0; 
-		return;
+
+	switch (turn) // sets to next person
+	{
+	case 0:
+	case 1:
+	case 2:
+		if (turn < numOfPlayers)
+			turn++;
+		break;
+	default:
+		turn = 0;
 	}
 		
-	std::cout << "YOURE HERE" << turn << "Z\n";
 }
 
 void goofyrollsremaining(scorecard pl, int rolls)
@@ -113,7 +116,7 @@ bool rerollorEnterScore(scorecard& player, int& rolls)
 
 	while (true) {
 		player.color("green");
-		std::cout << "\n1. Enter your rolled dice as a score\n2. Roll again\n3. Return held dice to roll"; player.color("default"); std::cout << "\n";
+		std::cout << "\n1. Enter your rolled dice as a score\n2. Roll again\n3. Return held dice to rolled dice"; player.color("default"); std::cout << "\n";
 		std::cout << "INPUT: ";
 		std::cin >> choice;
 
@@ -134,7 +137,14 @@ bool rerollorEnterScore(scorecard& player, int& rolls)
 			}
 			break;
 		case '3':
-			removeDiceHeld(player);
+			if (rolls <= 0) {
+				std::cout << "No rolls left. Must enter score." << std::endl;
+				Sleep(500);
+			}
+			else
+			{
+				removeDiceHeld(player);
+			}
 			break;
 		default:
 			std::cout << "\nPlease enter a valid choice. You cannot bypass entering a score.\n";
@@ -175,6 +185,7 @@ void fillscore(scorecard& pl)
 	char choice;
 	bool choosing = true;
 	int score;
+
 	while (choosing)
 	{
 		pl.displayscorecard();
@@ -237,6 +248,7 @@ void fillscore(scorecard& pl)
 				choosing = false;
 			break;
 		case 'c': // full house
+			score = fullhouse(pl);
 			if (score != 99)
 				choosing = false;
 			break;
@@ -261,6 +273,32 @@ void fillscore(scorecard& pl)
 			break;
 		}
 	}
+}
+
+int fullhouse(scorecard& pl)
+{
+	int count, threeDice;
+
+	for (int i = 1; i < 7; i++) // 1 to 7 to ecompass all dice options
+	{
+		count = std::count(pl.getdice(), pl.getdice() + 5, i);
+		std::cout << "COUNT!" << count << std::endl; // DEBUG
+		if (count == 3) {
+			threeDice = i;
+			for (int c = 1; i < 7; i++)
+			{
+				count = std::count(pl.getdice(), pl.getdice() + 5, i);
+				if (count == 2 && i != threeDice) {
+					std::cout << "YOu have FULL HOUSE ON TV?? DVD??";
+					return 25;
+				}
+			}
+			
+		}
+
+	}
+	std::cout << "You don't have a full house" << std::endl;
+	return 99;
 }
 
 int numberofx(scorecard& pl, int num)
@@ -388,9 +426,9 @@ int validateNumbers(int held, scorecard& player)
 	}
 }
 
-void playercount(scorecard& play1, scorecard& play2, scorecard& play3, scorecard& play4)
+void playercount(scorecard pl[])
 {
-	int count, whosturn = 0;
+	int count, turn = 0;
 	std::string name;
 
 	while (true) {
@@ -400,120 +438,60 @@ void playercount(scorecard& play1, scorecard& play2, scorecard& play3, scorecard
 		switch (count)
 		{
 		case 1:
-			std::cout << "Enter your name\nINPUT: ";
-			std::cin >> name;
-			play1.setname(name);
-			std::cout << std::endl;
-			onePlayerGame(play1);
-			return;
 		case 2:
-			std::cout << "Enter player1 name\nINPUT: ";
-			std::cin >> name;
-			play1.setname(name);
-			std::cout << std::endl;
-			std::cout << "Enter player2 name\nINPUT: ";
-			std::cin >> name;
-			play2.setname(name);
-			std::cout << std::endl;
-			twoPlayerGame(play1, play2, whosturn);
-			return;
 		case 3:
 		case 4:
-			break;
+			for (int i = 0; i < count; i++) {
+				std::cout << "Enter player " << i + 1 << "'s name\nINPUT: ";
+				std::cin >> name;
+				pl[i].setname(name);
+				std::cout << std::endl;
+			}
+			PlayerGame(pl, turn, count);
+			return;
 		default:
+			std::cout << "ERROR: Enter an appropriate value";
 			break;
-
 		}
 	}
 }
 
-void onePlayerGame(scorecard& play1)
-{
-	bool playing = true;
-	int choice, whosturn = 0;
-
-	while (playing)
-	{
-		std::cout << "1. Roll\n2. Check Card\nINPUT: ";
-		std::cin >> choice;
-		switch (choice)
-		{
-		case 1:
-			playertaketurn(play1, whosturn);
-			std::cout << std::endl;
-			break;
-		case 2:
-			play1.displayscorecard();
-			break;
-		default:
-			break;
-		}
-
-	}
-}
-
-void twoPlayerGame(scorecard& play1, scorecard& play2, int& whosturn)
+void PlayerGame(scorecard pl[], int& whosturn, int numOfPlayers )
 {
 	bool playing = true;
 	int choice;
 
-	while (playing) {
-		while (whosturn == 0)
-		{
-			play1.getname(); std::cout << "'s turn!\n";
+	while (playing)
+	{
+			pl[whosturn].getname(); std::cout << "'s turn!\n";
 			std::cout << "1. Roll\n2. Check Card\nINPUT: ";
 			std::cin >> choice;
 			switch (choice)
 			{
 			case 1:
-				playertaketurn(play1, whosturn);
+				playertaketurn(pl[whosturn], whosturn, numOfPlayers);
 				std::cout << std::endl;
 				break;
 			case 2:
-				play1.displayscorecard();
+				pl[whosturn].displayscorecard();
 				break;
 			default:
 				break;
 			}
-
-		}
-
-		while (whosturn == 1)
-		{
-			play2.getname(); std::cout << "'s turn!\n";
-			std::cout << "1. Roll\n2. Check Card\nINPUT: ";
-			std::cin >> choice;
-			switch (choice)
-			{
-			case 1:
-				playertaketurn(play2, whosturn);
-				std::cout << std::endl;
-				break;
-			case 2:
-				play2.displayscorecard();
-				break;
-			default:
-				break;
-			}
-
-		}
 	}
 }
 
+
 int main()
 {
-	int choice, numPlayers;
 
 	scorecard play1;
 	scorecard play2;
 	scorecard play3;
 	scorecard play4;
 
-	playercount(play1, play2, play3, play4);
+	scorecard playerlist[4] = { play1, play2, play3, play4 };
 
-	//play1.setname(name1);
-	//play1.getname(); std::cout << "\n";
-
-	
+	playercount(playerlist);
 
 }
