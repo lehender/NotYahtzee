@@ -5,6 +5,7 @@
 #include <windows.h>
 
 
+
 class player
 {
 private:
@@ -259,8 +260,8 @@ public:
 			// std::cout << "NHELD" << helddice[i] << std::endl; // DEBUG
 			if (helddice[i] == 0) {
 				alldice[i] = (rand() % 6) + 1;
-				// Sleep(5);
 				std::cin.clear(); 
+				Sleep(5);
 			}
 			else
 				alldice[i] = 0;
@@ -342,8 +343,8 @@ class scorecard :public player
 private:
 	int totalup = 0, totallow = 0;
 
-	char tops[7] = { 'u', 'u', 'u', 'u', 'u', 'u', '0' };
-	char bottoms[7] = { 'u', 'u', 'u', 'u', 'u', 'u', 'u' };
+	char tops[7] = { 'u', 'u', 'u', 'u', 'u', 'u', '0' };	// 1 2 3 4 5 6 bonus
+	char bottoms[7] = { 'u', 'u', 'u', 'u', 'u', 'u', 'u' };// 3of, 4of, fullH, smallStr, lrgStr, yaht, chance
 
 public:
 
@@ -422,10 +423,16 @@ public:
 	{
 		tops[pos] = score;
 	}
+	void setscorebot(int pos, int score)
+	{
+		bottoms[pos] = score;
+	}
 
 	bool getscore(int topbot, int pos)
 	{
 		pos--;
+
+		std::cout << "TOPBOT " << topbot << "POS " << pos << std::endl;
 
 		switch (pos)
 		{
@@ -440,7 +447,7 @@ public:
 				if (tops[pos] == 'u')
 					return true;
 				else {
-					std::cout << "You cannot enter a score in that position";
+					std::cout << "You cannot enter a score in that position\n";
 					return false;
 				}
 					
@@ -449,11 +456,11 @@ public:
 				if (bottoms[pos] == 'u')
 					return true;
 			if (topbot == 0) {
-				std::cout << "You cannot enter a score in that position";
+				std::cout << "You cannot enter a score in that position\n";
 				return false;
 			}
 		default:
-			std::cout << "You cannot enter a score in that position";
+			std::cout << "You cannot enter a score in that position\n";
 			return false;
 		}
 	}
