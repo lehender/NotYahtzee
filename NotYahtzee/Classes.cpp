@@ -432,7 +432,7 @@ public:
 	{
 		pos--;
 
-		std::cout << "TOPBOT " << topbot << "POS " << pos << std::endl;
+		// std::cout << "TOPBOT " << topbot << "POS " << pos << std::endl;
 
 		switch (pos)
 		{
