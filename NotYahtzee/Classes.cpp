@@ -5,7 +5,6 @@
 #include <windows.h>
 
 
-
 class player
 {
 private:
@@ -140,7 +139,7 @@ public:
 
 	void displayhelddice() // these show the dice in a nice easy to understand ASCII display
 	{
-
+		// std::sort(helddice,helddice + 5);
 		std::cout << "YOUR HELD DICE " << std::endl;
 		for (int pass = 0; pass < 4; pass++)
 		{
@@ -343,8 +342,8 @@ class scorecard :public player
 private:
 	int totalup = 0, totallow = 0;
 
-	char tops[7] = { 'u', 'u', 'u', 'u', 'u', 'u', '0' };	// 1 2 3 4 5 6 bonus
-	char bottoms[7] = { 'u', 'u', 'u', 'u', 'u', 'u', 'u' };// 3of, 4of, fullH, smallStr, lrgStr, yaht, chance
+	int tops[7] = { 'u', 'u', 'u', 'u', 'u', 'u', '0' };	// 1 2 3 4 5 6 bonus
+	int bottoms[7] = { 'u', 'u', 'u', 'u', 'u', 'u', 'u' };// 3of, 4of, fullH, smallStr, lrgStr, yaht, chance
 
 public:
 
@@ -425,14 +424,17 @@ public:
 	}
 	void setscorebot(int pos, int score)
 	{
-		bottoms[pos] = score;
+		if (pos == 5)
+			bottoms[pos] += score;
+		else
+			bottoms[pos] = score;
 	}
 
 	bool getscore(int topbot, int pos)
 	{
 		pos--;
 
-		// std::cout << "TOPBOT " << topbot << "POS " << pos << std::endl;
+		// std::cout << "TOPBOT " << topbot << "POS " << pos << std::endl; // DEBUG
 
 		switch (pos)
 		{
@@ -448,6 +450,7 @@ public:
 					return true;
 				else {
 					std::cout << "You cannot enter a score in that position\n";
+					Sleep(500);
 					return false;
 				}
 					
@@ -457,10 +460,12 @@ public:
 					return true;
 			if (topbot == 0) {
 				std::cout << "You cannot enter a score in that position\n";
+				Sleep(500);
 				return false;
 			}
 		default:
 			std::cout << "You cannot enter a score in that position\n";
+			Sleep(500);
 			return false;
 		}
 	}
