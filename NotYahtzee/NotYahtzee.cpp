@@ -46,15 +46,14 @@ void playertaketurn(scorecard& player, int& turn, int numOfPlayers)
 //---------------------DEBUG FORCE HAND------####//---------------------DEBUG FORCE HAND------####
 void setDiceDEBUG(scorecard& pl)
 {
-	pl.debugdice(0, 1);
-	pl.debugdice(1, 2);
-	pl.debugdice(2, 3);
-	pl.debugdice(3, 4);
-	pl.debugdice(4, 3);
+	pl.debugdice(0, 5);
+	pl.debugdice(1, 5);
+	pl.debugdice(2, 5);
+	pl.debugdice(3, 5);
+	pl.debugdice(4, 5);
 
 }
 //---------------------DEBUG FORCE HAND------####//---------------------DEBUG FORCE HAND------####
-
 void goofyrollsremaining(scorecard pl, int rolls)
 {
 	switch (rolls)
@@ -71,6 +70,24 @@ void goofyrollsremaining(scorecard pl, int rolls)
 		pl.color("redback"); std::cout << "\nFINAL ROLL"; pl.color("default"); std::cout << std::endl;
 		Sleep(1000);
 		break;
+	}
+}
+
+void showalldice(scorecard& player)
+{
+	for (int i = 0; i < 5; i++) {// check if first roll, aka No held dice to show only blank space
+		if (player.getdice()[i] != 0) // as long as the hand is not all 0s we will see rolled dice.
+		{
+			player.displaydice();
+			break;
+		}
+	}
+	for (int i = 0; i < 5; i++) {// check if first roll, aka No held dice to show only blank space
+		if (player.gethelddice()[i] != 0) 
+		{
+			player.displayhelddice();
+			break;
+		}
 	}
 }
 
@@ -147,9 +164,8 @@ bool rerollorEnterScore(scorecard& player, int& rolls)
 		switch (choice)
 		{
 		case '1':
-			if (rolls <= 0) {
+			if (rolls <= 0) 
 				noRollsLeft(player);
-			}
 			else
 			{
 				rolls--;
@@ -161,13 +177,10 @@ bool rerollorEnterScore(scorecard& player, int& rolls)
 			return false;
 			break;
 		case '3':
-			if (rolls <= 0) {
+			if (rolls <= 0) 
 				noRollsLeft(player);
-			}
 			else
-			{
 				removeDiceHeld(player);
-			}
 			break;
 		default:
 			validchoice(player);
@@ -180,9 +193,8 @@ bool rerollorEnterScore(scorecard& player, int& rolls)
 void removeDiceHeld(scorecard& pl) // problems here
 {
 	int removal;
-	bool choosing = true;
 
-	while (choosing) {
+	while (true) {
 		std::cout << "\nEnter a number of 1 dice you want to remove from your held dice or enter 0 to cancel\nINPUT: ";
 		std::cin >> removal;
 		if (removal != 0) {
@@ -208,7 +220,7 @@ void fillscore(scorecard& pl)
 	bool choosing = true;
 	int score;
 
-	while (choosing)
+	while (true)
 	{
 		pl.displayhelddice();
 		pl.displayscorecard();
@@ -326,7 +338,7 @@ int handChoice(scorecard& pl, std::string hand, int scoreToAdd)
 
 int xStraight(scorecard& pl, int stsize)
 {
-	int counter = 0, starter, d = 0, count;
+	int counter = 0, starter, d = 0;
 
 	starter = pl.gethelddice()[0]; // impossible straight if = 4||5||6
 
@@ -381,7 +393,6 @@ int xStraight(scorecard& pl, int stsize)
 int chance(scorecard& pl)
 {
 	int total = 0;
-	char choice;
 
 	for (int i = 0; i < 5; i++)
 		total += pl.gethelddice()[i];
@@ -534,24 +545,14 @@ void PlayerGame(scorecard pl[], int& whosturn, int numOfPlayers)
 
 void titleshow(scorecard t)
 {
-	std::cout << "Welcome to, Levi H's..." << std::endl;
+	std::cout << "Welcome to..." << std::endl;
 	Sleep(500);
-	t.color("red"); std::cout << "ooooo      ooo               .   "; t.color("default"); std::cout << std::endl;
-	std::cout << "`888b.     `8'             .o8   "; t.color("default"); std::cout << std::endl;
-	t.color("red"); std::cout << " 8 `88b.    8   .ooooo.  .o888oo "; t.color("default"); std::cout << std::endl;
-	std::cout << " 8   `88b.  8  d88' `88b   888   "; t.color("default"); std::cout << std::endl;
-	t.color("red"); std::cout << " 8     `88b.8  888   888   888   "; t.color("default"); std::cout << std::endl;
-	std::cout << " 8       `888  888   888   888 . "; t.color("default"); std::cout << std::endl;
-	t.color("red"); std::cout << "o8o        `8  `Y8bod8P'   {888/ "; t.color("default"); std::cout << std::endl;
-	std::cout << "" << std::endl;
-	t.color("red"); std::cout << "oooooo   oooo           oooo            .                                  .o. "; t.color("default"); std::cout << std::endl;
-	std::cout << " `888.   .8'            `888          .o8                                  888 "; t.color("default"); std::cout << std::endl;
-	t.color("red"); std::cout << "  `888. .8'    .oooo.    888 .oo.   .o888oo   oooooooo  .ooooo.   .ooooo.  888 "; t.color("default"); std::cout << std::endl;
-	std::cout << "   `888.8'    `P  )88b   888P^Y88b    888    d'/|7d8P  d88' `88b d88' `88b Y8P "; t.color("default"); std::cout << std::endl;
-	t.color("red"); std::cout << "    `888'      .oP^888   888   888    888      .d8P'   888ooo888 888ooo888 `8' "; t.color("default"); std::cout << std::endl;
-	std::cout << "     888      d8(  888   888   888    888 .  .d8P'  .P 888    .o 888    .o .o. "; t.color("default"); std::cout << std::endl;
-	t.color("red"); std::cout << "    o888o     `Y888/}8o o888o o888o   |888| d8888888P  `Y8bod8P' `Y8bod8P' Y8P "; t.color("default"); std::cout << std::endl;
-	std::cout << std::endl;
+	t.color("bluetext");
+	std::cout << "|# |#  |## |#####  \\#   /#        |#                                   " << std::endl;
+	std::cout << "|##\\# |# |#  |#     \\# /#  /###   |#_    |#_  _____  _____  _____        " << std::endl;
+	std::cout << "|#\\## |# |#  |#      |#   |#  |#  |###  |### |##### |##### |#####        " << std::endl;
+	std::cout << "|# \\# |# |#  |#      |#   |#  |#  |# |#  |#    /#__ |# =__ |# =__        " << std::endl;
+	std::cout << "|# |#  |##   |#      |#    \\### # |# |#   |# |##### |##### |#####        " << std::endl; t.color("default");
 	Sleep(500);
 
 }

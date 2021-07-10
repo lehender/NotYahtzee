@@ -1,9 +1,3 @@
-#include <iostream>
-#include <iomanip>
-#include <string>
-#include <algorithm>
-#include <windows.h>
-
 #include "nHeader.h"
 
 
@@ -310,6 +304,8 @@ void player::color(std::string col)
 		SetConsoleTextAttribute(hConsole, 14);
 	if (col == "red")
 		SetConsoleTextAttribute(hConsole, 4);
+	if (col == "bluetext")
+		SetConsoleTextAttribute(hConsole, 9);
 	if (col == "teal")
 		SetConsoleTextAttribute(hConsole, 11);
 	if (col == "green")
@@ -416,7 +412,11 @@ void scorecard::setscoretop(int pos, int score)
 void scorecard::setscorebot(int pos, int score)
 {
 	if (pos == 5)
+	{
+		if (bottoms[5] == 'u')
+			bottoms[5] = 0;
 		bottoms[pos] += score;
+	}
 	else
 		bottoms[pos] = score;
 }
@@ -424,7 +424,6 @@ void scorecard::setscorebot(int pos, int score)
 bool scorecard::getscore(int topbot, int pos)
 {
 	pos--;
-
 	// std::cout << "TOPBOT " << topbot << "POS " << pos << std::endl; // DEBUG
 
 	switch (pos)
@@ -439,21 +438,10 @@ bool scorecard::getscore(int topbot, int pos)
 		if (topbot == 0)
 			if (tops[pos] == 'u')
 				return true;
-			else {
-				std::cout << "You cannot enter a score in that position\n";
-				Sleep(500);
-				return false;
-			}
-
 	case 7:
 		if (topbot == 1)
 			if (bottoms[pos] == 'u')
 				return true;
-		if (topbot == 0) {
-			std::cout << "You cannot enter a score in that position\n";
-			Sleep(500);
-			return false;
-		}
 	default:
 		std::cout << "You cannot enter a score in that position\n";
 		Sleep(500);
