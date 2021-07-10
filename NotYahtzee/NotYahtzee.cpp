@@ -14,7 +14,7 @@ void playertaketurn(scorecard& player, int& turn, int numOfPlayers)
 	player.resethelddice();
 
 	player.color("green");
-	std::cout << "\nEnter a number you want to keep from your dice, either one at a time, or a number separated by a space. \nPress enter to keep the number(s)\nEnter 0 to keep your hand and re-roll if you have spare dice not held";
+	std::cout << "\nInput the number to keep from your dice. Input 0 to advance to next roll or score entry.\nEXAMPLE: 1 [ENTER] 2 [ENTER] 0 [ENTER] end of turn.\nEXAMPLE: 1 2 3 0 [ENTER] end of turn\n";
 	player.color("default"); std::cout << std::endl;
 	Sleep(1000);
 
@@ -43,6 +43,17 @@ void playertaketurn(scorecard& player, int& turn, int numOfPlayers)
 	}
 
 }
+//---------------------DEBUG FORCE HAND------####//---------------------DEBUG FORCE HAND------####
+void setDiceDEBUG(scorecard& pl)
+{
+	pl.debugdice(0, 1);
+	pl.debugdice(1, 2);
+	pl.debugdice(2, 3);
+	pl.debugdice(3, 4);
+	pl.debugdice(4, 3);
+
+}
+//---------------------DEBUG FORCE HAND------####//---------------------DEBUG FORCE HAND------####
 
 void goofyrollsremaining(scorecard pl, int rolls)
 {
@@ -111,25 +122,33 @@ void forcealldiceheld(scorecard& player)
 	//std::sort(player.gethelddice(), player.gethelddice() + 5);
 }
 
+void noRollsLeft(scorecard player)
+{
+	player.color("red");  std::cout << "No rolls left. Must enter score."; player.color("red"); std::cout << std::endl;
+	Sleep(500);
+}
+
+void validchoice(scorecard player)
+{
+	player.color("red");  std::cout << "Please enter a valid choice."; player.color("red"); std::cout << std::endl;
+	Sleep(500);
+}
+
 bool rerollorEnterScore(scorecard& player, int& rolls)
 {
 	char choice;
 
 	while (true) {
 		player.color("green");
-		std::cout << "\n1. Enter your rolled dice as a score\n2. Roll again\n3. Return held dice to rolled dice"; player.color("default"); std::cout << "\n";
+		std::cout << "\n1. Roll Again\n2. Enter your rolled dice as a score\n3. Return held dice to rolled dice"; player.color("default"); std::cout << "\n";
 		std::cout << "INPUT: ";
 		std::cin >> choice;
 
 		switch (choice)
 		{
 		case '1':
-			return false;
-			break;
-		case '2':
 			if (rolls <= 0) {
-				std::cout << "No rolls left. Must enter score." << std::endl;
-				Sleep(500);
+				noRollsLeft(player);
 			}
 			else
 			{
@@ -137,10 +156,13 @@ bool rerollorEnterScore(scorecard& player, int& rolls)
 				return true;
 			}
 			break;
+		case '2':
+			// setDiceDEBUG(player); // DEBUG FORCE HAND DEBUG
+			return false;
+			break;
 		case '3':
 			if (rolls <= 0) {
-				std::cout << "No rolls left. Must enter score." << std::endl;
-				Sleep(500);
+				noRollsLeft(player);
 			}
 			else
 			{
@@ -148,8 +170,7 @@ bool rerollorEnterScore(scorecard& player, int& rolls)
 			}
 			break;
 		default:
-			std::cout << "\nPlease enter a valid choice. You cannot bypass entering a score.\n";
-			Sleep(500);
+			validchoice(player);
 			break;
 		}
 	}
@@ -272,7 +293,32 @@ void fillscore(scorecard& pl)
 			}
 			break;
 		default:
-			std::cout << "Please make a valid entry" << std::endl;
+			validchoice(pl);
+			break;
+		}
+	}
+}
+
+int handChoice(scorecard& pl, std::string hand, int scoreToAdd)
+{
+	char choice;
+
+	while (true) {
+		if(scoreToAdd != 0)
+			std::cout << "You have a " << hand << "!\nAdd " << scoreToAdd << " to your score? (y / n): ";
+		else
+			std::cout << "You don't have a " << hand << "\nAdd " << scoreToAdd << " to your score? (y / n): ";
+		std::cin >> choice;
+		switch (tolower(choice))
+		{
+		case 'y':
+			std::cout << scoreToAdd << " added to " << hand << std::endl;
+			return scoreToAdd;
+		case 'n':
+			std::cout << "Returning to score card." << std::endl;
+			return 99;
+		default:
+			validchoice(pl);
 			break;
 		}
 	}
@@ -280,8 +326,7 @@ void fillscore(scorecard& pl)
 
 int xStraight(scorecard& pl, int stsize)
 {
-	int counter = 0, starter, d = 0;
-	char choice;
+	int counter = 0, starter, d = 0, count;
 
 	starter = pl.gethelddice()[0]; // impossible straight if = 4||5||6
 
@@ -296,69 +341,40 @@ int xStraight(scorecard& pl, int stsize)
 			if (pl.gethelddice()[d] == i)
 			{
 				// std::cout << "TISEQUAL\n"; // DEBUG
-				if ((std::count(pl.gethelddice(), pl.gethelddice() + 5, i) > 1)) {
-					d++; // since held dice are sorted, if there is more than 1 then we tell the program to skip the next one so we dont count it twice and throw off the straight ie 1,2,3,3,4 is a straight.
+				if (std::count(pl.gethelddice(), pl.gethelddice() + 5, i) > 1) {
+					d+= std::count(pl.gethelddice(), pl.gethelddice() + 5, i); // since held dice are sorted, if there is more than 1 then we tell the program to skip the next one so we dont count it twice and throw off the straight ie 1,2,3,3,4 is a straight.
 					counter++;
 				}
-				else
+				else {
+					d++;
 					counter++;
+				}
 			}
-			d++;
+			else
+			{
+				if(counter < 4)
+					counter = 0;
+				d++;
+			}
 		}
 		break;
-	case 4:
-	case 5:
-	case 6:
 	default:
 		break;
 	}
-
+	// std::cout << "COUNTERz " << counter << " stsize " << stsize << std::endl;
 	if (counter >= stsize)
 	{
-		while (true) {
-			if (stsize == 4)
-				std::cout << "You have a small straight!\nAdd 30 to your score ? (y / n) : ";
-			else
-				std::cout << "You have a LARGE straight!\nAdd 40 to your score ? (y / n) : ";
-			std::cin >> choice;
-			switch (tolower(choice))
-			{
-			case 'y':
-				if (stsize == 4) {
-					std::cout << "30 added to small straight" << std::endl;
-					return 30;
-				}
-				else {
-					std::cout << "40 added to large straight" << std::endl;
-					return 40;
-				}
-			case 'n':
-				std::cout << "Returning to score card." << std::endl;
-				return 99;
-			default:
-				std::cout << "Please enter a valid entry" << std::endl;
-				break;
-			}
-		}
+		if (stsize == 4)
+			return handChoice(pl, "small straight", 30);
+		else
+			return handChoice(pl, "large straight", 40);
 	}
 	else
 	{
-		while (true) {
-			std::cout << "You don't have a straight. Enter 0 in score? (y / n) : ";
-			std::cin >> choice;
-			switch (tolower(choice))
-			{
-			case 'y':
-				std::cout << "0 added to straight" << std::endl;
-				return 0;
-			case 'n':
-				std::cout << "Returning to score card." << std::endl;
-				return 99;
-			default:
-				std::cout << "Please enter a valid entry" << std::endl;
-				break;
-			}
-		}
+		if (stsize == 4)
+			return handChoice(pl, "small straight", 0);
+		else
+			return handChoice(pl, "large straight", 0);
 	}
 }
 
@@ -368,89 +384,40 @@ int chance(scorecard& pl)
 	char choice;
 
 	for (int i = 0; i < 5; i++)
-	{
 		total += pl.gethelddice()[i];
-	}
 
-	while (true) {
-		std::cout << "Total of your dice is " << total << ". Add " << total << " to your score ? (y / n) : ";
-		std::cin >> choice;
-		switch (tolower(choice))
-		{
-		case 'y':
-			std::cout << total << " added to Chance" << std::endl;
-			return total;
-		case 'n':
-			std::cout << "Returning to score card." << std::endl;
-			return 99;
-		default:
-			std::cout << "Please enter a valid entry" << std::endl;
-			break;
-		}
-	}
+	return handChoice(pl, "total of " + std::to_string(total), total);
+	
 }
 
 int fullhouse(scorecard& pl)
 {
-	int count, threeDice;
-	char choice;
+	int count;
 
 	for (int i = 1; i < 7; i++) // 1 to 7 to ecompass all dice options
 	{
 		count = std::count(pl.gethelddice(), pl.gethelddice() + 5, i);
 		// std::cout << "COUNT!" << std::count(pl.gethelddice(), pl.gethelddice() + 5, i) << " SEARCHING FOR " << i << std::endl; // DEBUG
 		if (count == 3) {
-			// threeDice = i;
-			std::cout << "YOURE IN!\n";
+			// std::cout << "YOURE IN!\n"; DEBUG
 			for (int c = 1; c < 7; c++)
 			{
 				count = std::count(pl.gethelddice(), pl.gethelddice() + 5, c);
-				std::cout << "COUNTz!" << std::count(pl.gethelddice(), pl.gethelddice() + 5, c) << " SEARCHING FOR " << c << std::endl; // DEBUG
+				// std::cout << "COUNTz!" << std::count(pl.gethelddice(), pl.gethelddice() + 5, c) << " SEARCHING FOR " << c << std::endl; // DEBUG
 				if (count == 2) {
-					while (true) {
-						std::cout << "You have a Full House!\nAdd 25 to your score ? (y / n) : ";
-						std::cin >> choice;
-						switch (tolower(choice))
-						{
-						case 'y':
-							std::cout << "25 added to Full House" << std::endl;
-							return 25;
-						case 'n':
-							std::cout << "Returning to score card." << std::endl;
-							return 99;
-						default:
-							std::cout << "Please enter a valid entry" << std::endl;
-							break;
-						}
-					}
+					return handChoice(pl, "full house", 25);
+					
 				}
 			}
 
 		}
 	}
-	while (true) {
-		std::cout << "You don't have a full house. Enter 0 in score? (y / n) : ";
-		std::cin >> choice;
-		switch (tolower(choice))
-		{
-		case 'y':
-			std::cout << "0 added to Full House" << std::endl;
-			return 0;
-		case 'n':
-			std::cout << "Returning to score card." << std::endl;
-			return 99;
-		default:
-			std::cout << "Please enter a valid entry" << std::endl;
-			break;
-		}
-	}
+	return handChoice(pl, "full house", 0);
 }
 
 int numberofx(scorecard& pl, int num)
 {
 	int score = 0, inc = 0;
-	char choice;
-	bool confirm = true;
 
 	for (int i = 0; i < 5; i++)
 	{
@@ -459,98 +426,31 @@ int numberofx(scorecard& pl, int num)
 			inc++;
 		}
 	}
-
-	while (confirm) {
-		std::cout << "You have " << inc << " " << num << "'s\nYou want to enter " << score << " as your score ? (y / n) : ";
-		std::cin >> choice;
-		switch (tolower(choice))
-		{
-		case 'y':
-			std::cout << score << " added to " << num << std::endl;
-			return score;
-		case 'n':
-			std::cout << "Returning to score card." << std::endl;
-			return 99;
-		default:
-			std::cout << "Please enter a valid entry" << std::endl;
-			break;
-		}
-	}
+	if(inc == 0)
+		return handChoice(pl, std::to_string(num), score);
+	else
+		return handChoice(pl, std::to_string(inc) + " " + std::to_string(num) + "'s", score);
 }
 
 int xOfaKind(scorecard& pl, int num)
 {
 	int count;
-	bool confirm = true;
-	char choice;
 
 	for (int i = 1; i < 7; i++) // 1 to 7 to ecompass all dice options
 	{
 		count = std::count(pl.gethelddice(), pl.gethelddice() + 5, i);
 		// std::cout << "COUNT!" << std::count(pl.gethelddice(), pl.gethelddice() + 5, i) << std::endl; // DEBUG
 		if (count >= num) {
-			while (confirm) {
-				if (num == 5) // check for test yahtzee
-					std::cout << "You have a YAHTZEE.\nAdd 50 to Yahtzee? (y / n) : ";
-				else
-					std::cout << "You have " << count << " " << i << "'s in your hand.\nAdd " << count * i << " to your " << num << " of a kind? (y / n) : ";
-				std::cin >> choice;
-				switch (choice)
-				{
-				case 'Y':
-				case 'y':
-					if (num == 5) {
-						std::cout << "50 added to Yahtzee!" << std::endl;
-						return 50;
-					}
-					else
-						std::cout << count * i << " added to " << num << " of a kind." << std::endl;
-					return count * i;
-				case 'N':
-				case 'n':
-					std::cout << "Returning to score card." << std::endl;
-					return 99;
-				default:
-					std::cout << "Please enter a valid entry" << std::endl;
-					break;
-				}
-			}
+			if (num == 5) // check for test yahtzee
+				return handChoice(pl, "Yahtzee", 50);
+			else
+				return handChoice(pl, std::to_string(num) + " of a kind", (num * 10));
 		}
 	}
 	if (num == 5) // check for test yahtzee
-		while (true) {
-			std::cout << "You don't have a Yahtzee. Enter 0 in score? (y / n) : ";
-			std::cin >> choice;
-			switch (tolower(choice))
-			{
-			case 'y':
-				std::cout << "0 added to Yahtzee" << std::endl;
-				return 0;
-			case 'n':
-				std::cout << "Returning to score card." << std::endl;
-				return 99;
-			default:
-				std::cout << "Please enter a valid entry" << std::endl;
-				break;
-			}
-		}
+		return handChoice(pl, "Yahtzee", 0);
 	else
-		while (true) {
-			std::cout << "You don't have " << num << "(or more) of a kind. Enter 0 in score? (y / n) : ";
-			std::cin >> choice;
-			switch (tolower(choice))
-			{
-			case 'y':
-				std::cout << "0 added to " << num << " of a kind." << std::endl;
-				return 0;
-			case 'n':
-				std::cout << "Returning to score card." << std::endl;
-				return 99;
-			default:
-				std::cout << "Please enter a valid entry" << std::endl;
-				break;
-			}
-		}
+		return handChoice(pl, std::to_string(num) + " of a kind", 0);
 }
 
 int validateNumbers(int held, scorecard& player)

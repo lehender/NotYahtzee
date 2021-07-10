@@ -274,6 +274,11 @@ void player::setdice(int numd)
 	alldice[numd] = 0;
 }
 
+void player::debugdice(int dice, int num)
+{
+	alldice[dice] = num;
+}
+
 void player::sethelddice(int numd, int inc)
 {
 	helddice[inc] = numd;

@@ -44,6 +44,8 @@ public:
 
 	void color(std::string);
 
+	void debugdice(int, int);
+
 };
 
 class scorecard :public player
@@ -90,3 +92,6 @@ int chance(scorecard&);
 int xStraight(scorecard&, int);
 
 void titleshow(scorecard);
+
+void noRollsLeft(scorecard);
+void validchoice(scorecard);
