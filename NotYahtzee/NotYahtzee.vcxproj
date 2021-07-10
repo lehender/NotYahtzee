@@ -142,6 +142,9 @@
     <ClCompile Include="Classes.cpp" />
     <ClCompile Include="NotYahtzee.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="nHeader.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
