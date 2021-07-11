@@ -14,7 +14,7 @@ void playertaketurn(scorecard& player, int& turn, int numOfPlayers)
 	player.resethelddice();
 
 	player.color("green");
-	std::cout << "\nInput the number to keep from your dice. Input 0 to advance to next roll or score entry.\nEXAMPLE: 1 [ENTER] 2 [ENTER] 0 [ENTER] end of turn.\nEXAMPLE: 1 2 3 0 [ENTER] end of turn\n";
+	std::cout << "\nInput the number of YOUR ROLLED DICE to move it to YOUR HELD DICE. Input 0 to advance to next roll or score entry.\n"; Sleep(100); std::cout << "EXAMPLE: 1[ENTER] 2[ENTER] 0[ENTER] end of turn.\n"; Sleep(100); std::cout << "EXAMPLE : 1 2 3 0[ENTER] end of turn\n";
 	player.color("default"); std::cout << std::endl;
 	Sleep(1000);
 
@@ -141,13 +141,13 @@ void forcealldiceheld(scorecard& player)
 
 void noRollsLeft(scorecard player)
 {
-	player.color("red");  std::cout << "No rolls left. Must enter score."; player.color("red"); std::cout << std::endl;
+	player.color("red");  std::cout << "No rolls left. Must enter score."; player.color("default"); std::cout << std::endl;
 	Sleep(500);
 }
 
 void validchoice(scorecard player)
 {
-	player.color("red");  std::cout << "Please enter a valid choice."; player.color("red"); std::cout << std::endl;
+	player.color("red");  std::cout << "Please enter a valid choice."; player.color("default"); std::cout << std::endl;
 	Sleep(500);
 }
 
@@ -190,31 +190,51 @@ bool rerollorEnterScore(scorecard& player, int& rolls)
 	return true;
 }
 
-void removeDiceHeld(scorecard& pl) // problems here
+void removeDiceHeld(scorecard& pl) // problems here // find a better way to remove dice from hand
 {
 	int removal;
+	bool found = false, sfound;
+
+	pl.displayhelddice();
 
 	while (true) {
-		std::cout << "\nEnter a number of 1 dice you want to remove from your held dice or enter 0 to cancel\nINPUT: ";
+		sfound = false;
+
+		std::cout << "\nEnter a number of 1 dice you want to remove from your held dice or enter 0 to return\nINPUT: ";
 		std::cin >> removal;
+		
 		if (removal != 0) {
-			for (int i = 5; i >= 0; i--)
+			for (int i = 0; i < 6; i++) {
 				if (removal == pl.gethelddice()[i]) {
-					pl.gethelddice()[i] = 0;
-					std::cout << i << " removed..." << std::endl;
+					found = true;
+					sfound = true;
+					for (int c = i; c < 5; ++c) {
+						if (c == 4)
+							pl.gethelddice()[c] = 0;
+						else
+							pl.gethelddice()[c] = pl.gethelddice()[c + 1]; // https://stackoverflow.com/questions/879603/remove-an-array-element-and-shift-the-remaining-ones
+						// std::cout << "your i " << i << " your c " << c << "\n"; // DEBUG
+					}
+					std::cout << removal << " removed..." << std::endl;
+					pl.displayhelddice();
 					break;
 				}
-			pl.displayhelddice();
+			}
+			if (sfound == false)
+				validchoice(pl);
+
 		}
 		else {
+			if (found == false)
+				validchoice(pl);
+			else
+				std::cout << "Returning...\n";
 			break;
 		}
 	}
-	std::cout << "No available dice in held." << std::endl;
-
 }
 
-void fillscore(scorecard& pl)
+void fillscore(scorecard& pl) // Switch responsible for allowing user to select the score to enter
 {
 	char choice;
 	bool choosing = true;
@@ -475,7 +495,7 @@ int validateNumbers(int held, scorecard& player)
 			break; // if we find 1, we dont want to continue going through and finding duplicates, only 1
 		}
 	if (valid == false) {
-		std::cout << "\nEnter a number that matches one of your dice\n";
+		validchoice(player);
 		if (held > 10) {
 			std::cout << "Did you mean to enter a space between your numbers?\n";
 		}
@@ -526,7 +546,7 @@ void PlayerGame(scorecard pl[], int& whosturn, int numOfPlayers)
 	while (playing)
 	{
 		pl[whosturn].getname(); std::cout << "'s turn!\n";
-		std::cout << "1. Roll\n2. Check Card\nINPUT: ";
+		std::cout << "1. Roll\n2. Check Score Card\n3. Save and Quit\nINPUT: ";
 		std::cin >> choice;
 		switch (choice)
 		{
@@ -538,6 +558,7 @@ void PlayerGame(scorecard pl[], int& whosturn, int numOfPlayers)
 			pl[whosturn].displayscorecard();
 			break;
 		default:
+			validchoice(pl[0]);
 			break;
 		}
 	}
