@@ -27,7 +27,7 @@ void playertaketurn(scorecard& player, int& turn, int numOfPlayers)
 	}
 	forcealldiceheld(player);
 	std::sort(player.gethelddice(), player.gethelddice() + 5);
-	// player.displayhelddice();
+
 	fillscore(player);
 
 	switch (turn) // sets to next person
@@ -35,8 +35,11 @@ void playertaketurn(scorecard& player, int& turn, int numOfPlayers)
 	case 0:
 	case 1:
 	case 2:
+		// std::cout << "TURN " << turn << " numofplayers = " << numOfPlayers << "\n"; // DEBUG
 		if (turn < (numOfPlayers - 1))
 			turn++;
+		else
+			turn = 0;
 		break;
 	default:
 		turn = 0;
@@ -98,7 +101,6 @@ void choosehand(scorecard& player, int rolls, int& inc)
 
 	while (inc <= 5 && rolls != 0)
 	{
-
 		player.displaydice();
 		for (int i = 0; i < 5; i++) {// check if first roll, aka No held dice to show only blank space
 			if (player.gethelddice()[i] != 0) {
@@ -151,7 +153,7 @@ void validchoice(scorecard player)
 	Sleep(500);
 }
 
-bool rerollorEnterScore(scorecard& player, int& rolls)
+bool rerollorEnterScore(scorecard& player, int& rolls) // main menu for most of the game. checks for rolls left and gives appropriate messages if none are. calls other functions based on selection
 {
 	char choice;
 
@@ -190,7 +192,7 @@ bool rerollorEnterScore(scorecard& player, int& rolls)
 	return true;
 }
 
-void removeDiceHeld(scorecard& pl) // problems here // find a better way to remove dice from hand
+void removeDiceHeld(scorecard& pl) // method uses a loop to find specific dice and dice placement in array, removes the dice and shifts dice after forward, placing a 0 at the end to lower the total count by 1
 {
 	int removal;
 	bool found = false, sfound;
@@ -240,7 +242,7 @@ void fillscore(scorecard& pl) // Switch responsible for allowing user to select 
 	bool choosing = true;
 	int score;
 
-	while (true)
+	while (choosing)
 	{
 		pl.displayhelddice();
 		pl.displayscorecard();
@@ -254,7 +256,7 @@ void fillscore(scorecard& pl) // Switch responsible for allowing user to select 
 		case '4':
 		case '5':
 		case '6':
-			if (pl.getscore(0, ((int)choice - 48))) { // function prevents entering a score twice
+			if (pl.checkscore(0, ((int)choice - 48))) { // function prevents entering a score twice
 				score = numberofx(pl, ((int)choice - 48)); // function that counts number user wants to count for score
 				if (score != 99) {
 					choosing = false;
@@ -264,7 +266,7 @@ void fillscore(scorecard& pl) // Switch responsible for allowing user to select 
 			break;
 
 		case 'a': // 3 of a kind
-			if (pl.getscore(1, 1)) { // needs to be 1 because by default we remove 1 in getscore function
+			if (pl.checkscore(1, 1)) { // needs to be 1 because by default we remove 1 in checkscore function
 				score = xOfaKind(pl, 3);
 				if (score != 99) {
 					choosing = false;
@@ -273,7 +275,7 @@ void fillscore(scorecard& pl) // Switch responsible for allowing user to select 
 			}
 			break;
 		case 'b': // 4 of a kind
-			if (pl.getscore(1, 2)) {
+			if (pl.checkscore(1, 2)) {
 				score = xOfaKind(pl, 4);
 				if (score != 99) {
 					choosing = false;
@@ -282,7 +284,7 @@ void fillscore(scorecard& pl) // Switch responsible for allowing user to select 
 			}
 			break;
 		case 'c': // full house
-			if (pl.getscore(1, 3)) {
+			if (pl.checkscore(1, 3)) {
 				score = fullhouse(pl);
 				if (score != 99) {
 					choosing = false;
@@ -291,7 +293,7 @@ void fillscore(scorecard& pl) // Switch responsible for allowing user to select 
 			}
 			break;
 		case 'd': // sm straight
-			if (pl.getscore(1, 3)) {
+			if (pl.checkscore(1, 4)) {
 				score = xStraight(pl, 4);
 				if (score != 99) {
 					choosing = false;
@@ -300,7 +302,7 @@ void fillscore(scorecard& pl) // Switch responsible for allowing user to select 
 			}
 			break;
 		case 'e': // lg straight
-			if (pl.getscore(1, 4)) {
+			if (pl.checkscore(1, 5)) {
 				score = xStraight(pl, 5);
 				if (score != 99) {
 					choosing = false;
@@ -316,7 +318,7 @@ void fillscore(scorecard& pl) // Switch responsible for allowing user to select 
 			}
 			break;
 		case 'g': // chance
-			if (pl.getscore(1, 7)) {
+			if (pl.checkscore(1, 7)) {
 				score = chance(pl);
 				if (score != 99) {
 					choosing = false;
@@ -355,12 +357,12 @@ int handChoice(scorecard& pl, std::string hand, int scoreToAdd)
 		}
 	}
 }
-
+// vvv problem
 int xStraight(scorecard& pl, int stsize)
 {
 	int counter = 0, starter, d = 0;
 
-	starter = pl.gethelddice()[0]; // impossible straight if = 4||5||6
+	starter = pl.gethelddice()[0]; // impossible straight if = 4||5||6 // BUG 1 3 4 5 6 does not register small straight
 
 	switch (starter)
 	{
@@ -409,7 +411,7 @@ int xStraight(scorecard& pl, int stsize)
 			return handChoice(pl, "large straight", 0);
 	}
 }
-
+// ^^^ problem
 int chance(scorecard& pl)
 {
 	int total = 0;
@@ -510,32 +512,102 @@ int validateNumbers(int held, scorecard& player)
 
 void playercount(scorecard pl[])
 {
-	int count, turn = 0;
+	int turn = 0;
+	char count;
 	std::string name;
 
 	while (true) {
-		std::cout << "How many players will be playing today? (1,2,3,4)\nINPUT: ";
+		std::cout << "How many players will be playing today? (1,2,3,4)\nAlternatively, enter L to load from file\nINPUT: ";
 		std::cin >> count;
 
 		switch (count)
 		{
-		case 1:
-		case 2:
-		case 3:
-		case 4:
-			for (int i = 0; i < count; i++) {
-				std::cout << "Enter player " << i + 1 << "'s name\nINPUT: ";
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+			for (int i = 0; i < (count - 48); i++) {
+				std::cout << "Enter player " << i + 1 << "'s name\nINPUT: "; // BUG need to use getline here // BUG user cant enter more than 1 name ie Bob Barker
 				std::cin >> name;
 				pl[i].setname(name);
 				std::cout << std::endl;
 			}
-			PlayerGame(pl, turn, count);
+			PlayerGame(pl, turn, (count - 48));
 			return;
+		case 'l':
+		case 'L':
+			loadGame(pl, turn, (count - 48));
+			break;
 		default:
-			std::cout << "ERROR: Enter an appropriate value";
+			validchoice(pl[0]);
 			break;
 		}
 	}
+}
+
+void loadGame(scorecard pl[], int turn, int plcount)
+{
+	std::string holdname;
+	int scorevalue;
+
+	std::ifstream input_file("notyahtzeesave.txt");
+	if (input_file.fail() == true) {
+
+		pl[1].color("red"); std::cout << "Error opening file.\nCheck file name matches notyahtzeesave.txt and is in the correct directory."; pl[1].color("default"); std::cout << std::endl;
+		Sleep(500);
+		return;
+	}
+	else {
+		input_file >> plcount;
+		input_file.ignore(SIZE_MAX, '\n');
+		input_file >> turn;
+		input_file.ignore(SIZE_MAX, '\n');
+
+		for (int i = 0; i < plcount; i++)
+		{
+			input_file >> holdname;
+			input_file.ignore(SIZE_MAX, '\n');
+			pl[i].setname(holdname);
+
+			for (int t = 0; t < 7; t++) {
+				input_file >> scorevalue;
+				input_file.ignore(SIZE_MAX, '\n');
+				pl[i].setscoretop(t, scorevalue);
+			}
+
+			for (int b = 0; b < 7; b++) {
+				input_file >> scorevalue;
+				input_file.ignore(SIZE_MAX, '\n');
+				pl[i].overwritescorebot(b, scorevalue);
+			}
+
+		}
+		input_file.close();
+
+		PlayerGame(pl, turn, plcount);
+	}
+	
+}
+
+void saveAndQuit(scorecard pl[], int whosturn, int numPlayers)
+{
+	std::ofstream fout("notyahtzeesave.txt");
+
+	fout << numPlayers << std::endl; // 1st, number of players
+	fout << whosturn << std::endl; // whos turn it is
+
+	for (int i = 0; i < numPlayers; i++) // for each player
+	{
+		fout << pl[i].getname() << std::endl;
+		for (int t = 0; t < 7; t++)
+			fout << pl[i].getTopScore(t) << std::endl;
+		for (int b = 0; b < 7; b++)
+			fout << pl[i].getBotScore(b) << std::endl;
+
+	}
+	std::cout << "Saved! to notyahtzeesave.txt";
+	Sleep(1000);
+	fout.close();
 }
 
 void PlayerGame(scorecard pl[], int& whosturn, int numOfPlayers)
@@ -545,7 +617,7 @@ void PlayerGame(scorecard pl[], int& whosturn, int numOfPlayers)
 
 	while (playing)
 	{
-		pl[whosturn].getname(); std::cout << "'s turn!\n";
+		std::cout << pl[whosturn].getname() << "'s turn!\n";
 		std::cout << "1. Roll\n2. Check Score Card\n3. Save and Quit\nINPUT: ";
 		std::cin >> choice;
 		switch (choice)
@@ -556,6 +628,10 @@ void PlayerGame(scorecard pl[], int& whosturn, int numOfPlayers)
 			break;
 		case 2:
 			pl[whosturn].displayscorecard();
+			break;
+		case 3:
+			saveAndQuit(pl, whosturn, numOfPlayers);
+			playing = false;
 			break;
 		default:
 			validchoice(pl[0]);

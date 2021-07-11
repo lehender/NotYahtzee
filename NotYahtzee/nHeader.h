@@ -4,6 +4,9 @@
 #include <iomanip>
 #include <string>
 #include <algorithm>
+#include <sstream>
+#include <fstream>
+#include <istream>
 #include <windows.h>
 
 
@@ -38,7 +41,7 @@ public:
 
 	void resethelddice();
 
-	void getname();
+	std::string getname();
 
 	void setname(std::string);
 
@@ -53,7 +56,7 @@ class scorecard :public player
 private:
 	int totalup = 0, totallow = 0;
 
-	int tops[7] = { 'u', 'u', 'u', 'u', 'u', 'u', '0' };	// 1 2 3 4 5 6 bonus
+	int tops[7] = { 'u', 'u', 'u', 'u', 'u', 'u', 'u' };	// 1 2 3 4 5 6 bonus
 	int bottoms[7] = { 'u', 'u', 'u', 'u', 'u', 'u', 'u' };// 3of, 4of, fullH, smallStr, lrgStr, yaht, chance
 
 public:
@@ -70,7 +73,13 @@ public:
 
 	void setscorebot(int, int);
 
-	bool getscore(int, int);
+	bool checkscore(int, int);
+
+	int getTopScore(int pos);
+
+	int getBotScore(int pos);
+
+	void overwritescorebot(int, int);
 
 };
 
@@ -95,3 +104,5 @@ void titleshow(scorecard);
 
 void noRollsLeft(scorecard);
 void validchoice(scorecard);
+
+void loadGame(scorecard[], int, int);

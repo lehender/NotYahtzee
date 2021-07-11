@@ -284,9 +284,9 @@ void player::resethelddice()
 		helddice[i] = 0;
 }
 
-void player::getname()
+std::string player::getname()
 {
-	std::cout << name;
+	return name;
 }
 
 void player::setname(std::string pname)
@@ -347,8 +347,8 @@ int scorecard::addtop()
 void scorecard::displayscorecard()
 {
 	int sleept = 10;
-	color("blueback"); std::cout << "\n(1)Number of 1s is: "; if (tops[0] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
-	else { std::cout << (int)tops[0]; }color("black"); Sleep(sleept); std::cout << "\n";
+	color("blueback"); std::cout << "\n(1)Number of 1s is: "; if (tops[0] == 'u') { std::cout << std::setw(17) << std::right << "Open"; } else { std::cout << (int)tops[0]; }color("black"); Sleep(sleept); std::cout << "\n";
+
 	color("blueback"); std::cout << "(2)Number of 2s is: "; if (tops[1] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
 	else { std::cout << (int)tops[1]; }color("default"); Sleep(sleept); std::cout << "\n";
 	color("blueback"); std::cout << "(3)Number of 3s is: "; if (tops[2] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
@@ -359,7 +359,8 @@ void scorecard::displayscorecard()
 	else { std::cout << (int)tops[4]; }color("default"); Sleep(sleept); std::cout << "\n";
 	color("blueback"); std::cout << "(6)Number of 6s is: "; if (tops[5] == 'u') { std::cout << std::setw(17) << std::right << "Open"; }
 	else { std::cout << (int)tops[5]; }color("default"); Sleep(sleept); std::cout << "\n";
-	color("tanback"); std::cout << "BONUS if upper score is over 63: " << topbonus(); color("default"); Sleep(sleept); std::cout << "\n";
+	color("tanback"); std::cout << "BONUS if upper score is over 63: "; if (topbonus() > 63) { std::cout << std::setw(17) << std::right << "35"; }
+	else { std::cout << "0"; }color("default"); Sleep(sleept); std::cout << "\n";
 	color("tanback"); std::cout << "Total Upper Score: " << std::setw(15) << std::right << addtop(); color("default"); Sleep(sleept); std::cout << "\n";
 
 	color("blueback"); std::cout << "\n(a)Three of a kind is: ";	if (bottoms[0] == 'u') { std::cout << std::setw(14) << std::right << "Open"; }
@@ -421,7 +422,12 @@ void scorecard::setscorebot(int pos, int score)
 		bottoms[pos] = score;
 }
 
-bool scorecard::getscore(int topbot, int pos)
+void scorecard::overwritescorebot(int pos, int score)
+{
+	bottoms[pos] = score;
+}
+
+bool scorecard::checkscore(int topbot, int pos)
 {
 	pos--;
 	// std::cout << "TOPBOT " << topbot << "POS " << pos << std::endl; // DEBUG
@@ -443,8 +449,18 @@ bool scorecard::getscore(int topbot, int pos)
 			if (bottoms[pos] == 'u')
 				return true;
 	default:
-		std::cout << "You cannot enter a score in that position\n";
+		color("red"); std::cout << "You cannot enter a score in that position"; color("default"); std::cout << std::endl;
 		Sleep(500);
 		return false;
 	}
+}
+
+int scorecard::getTopScore(int pos)
+{
+	return tops[pos];
+}
+
+int scorecard::getBotScore(int pos)
+{
+	return bottoms[pos];
 }
