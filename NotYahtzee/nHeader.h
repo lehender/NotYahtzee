@@ -1,5 +1,7 @@
 #pragma once
 
+#define NOMINMAX
+
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -10,6 +12,8 @@
 #include <windows.h>
 
 
+
+
 class player
 {
 private:
@@ -18,16 +22,14 @@ private:
 
 	int alldice[5] = { 0,0,0,0,0 };
 	int helddice[5] = { 0,0,0,0,0 };
-	int const numdice = sizeof(alldice) / sizeof(alldice[0]); // This gets us the actual size of our array alldice (dividing the size in bytes by position of 0 byte)
+	int const numdice = 5; 
 	std::string name;
 
 public:
 
 	void timer(int);
 
-	void displaydice(); // these show the dice in a nice easy to understand ASCII display
-
-	void displayhelddice();
+	void displaydice(int); // these show the dice in a nice easy to understand ASCII display
 
 	void roll();
 
@@ -49,15 +51,20 @@ public:
 
 	void debugdice(int, int);
 
+	void randcolor();
+
 };
 
 class scorecard :public player
 {
 private:
-	int totalup = 0, totallow = 0;
+	int totalup = 0, totallow = 0, total = 0;
 
 	int tops[7] = { 'u', 'u', 'u', 'u', 'u', 'u', 'u' };	// 1 2 3 4 5 6 bonus
 	int bottoms[7] = { 'u', 'u', 'u', 'u', 'u', 'u', 'u' };// 3of, 4of, fullH, smallStr, lrgStr, yaht, chance
+
+	//int tops[7] = { 10,10,10,10,10,15,0 };	// DEBUG
+	//int bottoms[7] = { 99,99,99,99,99,99,99 }; // DEBUG
 
 public:
 
@@ -75,11 +82,15 @@ public:
 
 	bool checkscore(int, int);
 
-	int getTopScore(int pos);
+	int getTopScore(int );
 
-	int getBotScore(int pos);
+	int getBotScore(int );
 
 	void overwritescorebot(int, int);
+
+	void playertotal();
+
+	int getscore();
 
 };
 

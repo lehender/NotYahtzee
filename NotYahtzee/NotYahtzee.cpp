@@ -46,7 +46,7 @@ void playertaketurn(scorecard& player, int& turn, int numOfPlayers)
 	}
 
 }
-//---------------------DEBUG FORCE HAND------####//---------------------DEBUG FORCE HAND------####
+//---------------------DEBUG FORCE HAND------####//---------------DEBUG FORCE HAND------####
 void setDiceDEBUG(scorecard& pl)
 {
 	pl.debugdice(0, 5);
@@ -56,7 +56,7 @@ void setDiceDEBUG(scorecard& pl)
 	pl.debugdice(4, 5);
 
 }
-//---------------------DEBUG FORCE HAND------####//---------------------DEBUG FORCE HAND------####
+//---------------------DEBUG FORCE HAND------####//---------------DEBUG FORCE HAND------####
 void goofyrollsremaining(scorecard pl, int rolls)
 {
 	switch (rolls)
@@ -81,14 +81,14 @@ void showalldice(scorecard& player)
 	for (int i = 0; i < 5; i++) {// check if first roll, aka No held dice to show only blank space
 		if (player.getdice()[i] != 0) // as long as the hand is not all 0s we will see rolled dice.
 		{
-			player.displaydice();
+			player.displaydice(0);
 			break;
 		}
 	}
 	for (int i = 0; i < 5; i++) {// check if first roll, aka No held dice to show only blank space
 		if (player.gethelddice()[i] != 0) 
 		{
-			player.displayhelddice();
+			player.displaydice(1);
 			break;
 		}
 	}
@@ -101,13 +101,7 @@ void choosehand(scorecard& player, int rolls, int& inc)
 
 	while (inc <= 5 && rolls != 0)
 	{
-		player.displaydice();
-		for (int i = 0; i < 5; i++) {// check if first roll, aka No held dice to show only blank space
-			if (player.gethelddice()[i] != 0) {
-				player.displayhelddice();
-				break;
-			}
-		}
+		showalldice(player);
 
 		std::cout << "\nINPUT: "; // ask user for input
 		std::cin >> holding[inc]; // inc 0, default first position
@@ -125,7 +119,7 @@ void choosehand(scorecard& player, int rolls, int& inc)
 	if (rolls == 0) // on the last roll, we dont want to decide what to hold and not hold. It can all be used towards score. This moves all new dice into player hands (red)
 	{
 		forcealldiceheld(player);
-		player.displayhelddice();
+		showalldice(player);
 	}
 }
 
@@ -138,7 +132,6 @@ void forcealldiceheld(scorecard& player)
 					player.sethelddice(player.getdice()[i], j); // we set the 0 dice to the number we caught with the for loop
 					player.setdice(i); // we set the unheld dice to 0 so it is not taken into account / shown
 				}
-	//std::sort(player.gethelddice(), player.gethelddice() + 5);
 }
 
 void noRollsLeft(scorecard player)
@@ -197,7 +190,7 @@ void removeDiceHeld(scorecard& pl) // method uses a loop to find specific dice a
 	int removal;
 	bool found = false, sfound;
 
-	pl.displayhelddice();
+	showalldice(pl);
 
 	while (true) {
 		sfound = false;
@@ -218,7 +211,7 @@ void removeDiceHeld(scorecard& pl) // method uses a loop to find specific dice a
 						// std::cout << "your i " << i << " your c " << c << "\n"; // DEBUG
 					}
 					std::cout << removal << " removed..." << std::endl;
-					pl.displayhelddice();
+					showalldice(pl);
 					break;
 				}
 			}
@@ -244,7 +237,7 @@ void fillscore(scorecard& pl) // Switch responsible for allowing user to select 
 
 	while (choosing)
 	{
-		pl.displayhelddice();
+		showalldice(pl);
 		pl.displayscorecard();
 		std::cout << "Enter the corresponding character for the score you want to fill\nINPUT: ";
 		std::cin >> choice;
@@ -338,10 +331,15 @@ int handChoice(scorecard& pl, std::string hand, int scoreToAdd)
 	char choice;
 
 	while (true) {
-		if(scoreToAdd != 0)
-			std::cout << "You have a " << hand << "!\nAdd " << scoreToAdd << " to your score? (y / n): ";
+		if (scoreToAdd != 0)
+		{
+			pl.color("gold"); std::cout << "You have a " << hand << "!"; pl.color("default"); std::cout << "\nAdd " << scoreToAdd << " to your score ? (y / n) : ";
+		}
 		else
-			std::cout << "You don't have a " << hand << "\nAdd " << scoreToAdd << " to your score? (y / n): ";
+		{
+			pl.color("red"); std::cout << "You don't have a " << hand << "."; pl.color("default"); std::cout << "\nAdd " << scoreToAdd << " to your score ? (y / n) : ";
+		}
+			
 		std::cin >> choice;
 		switch (tolower(choice))
 		{
@@ -610,6 +608,42 @@ void saveAndQuit(scorecard pl[], int whosturn, int numPlayers)
 	fout.close();
 }
 
+void checkWin(scorecard pl[], int numPlayers, bool& playing)
+{
+	bool gamewin = true;
+	int topscore = 0;
+	static std::string winnername;
+
+	for (int i = 0; i < numPlayers; i++) // for each player
+	{
+		for (int t = 0; t < 7; t++)
+			if (pl[i].getTopScore(t) == 'u' || pl[i].getBotScore(t) == 'u')
+				gamewin = false;
+	}
+	if (gamewin == true) {
+		for (int i = 0; i < 4; i++)
+		{
+			if (pl[i].getscore() > topscore) {
+				winnername = pl[i].getname();
+				topscore = pl[i].getscore();
+			}
+				
+		}
+		for (int i = 0; i < 40; i++) {
+			pl[0].randcolor();
+			std::cout << "Congratulations " << winnername << " you won the game!";
+			pl[0].color("default");
+			Sleep(25);
+			std::cout << std::endl;
+		}
+		pl[0].color("default"); pl[0].color("default"); pl[0].color("default");
+		playing = false;
+		Sleep(2000);
+	}
+		
+
+}
+
 void PlayerGame(scorecard pl[], int& whosturn, int numOfPlayers)
 {
 	bool playing = true;
@@ -617,6 +651,9 @@ void PlayerGame(scorecard pl[], int& whosturn, int numOfPlayers)
 
 	while (playing)
 	{
+		checkWin(pl, numOfPlayers, playing);
+		if (playing == false)
+			break;
 		std::cout << pl[whosturn].getname() << "'s turn!\n";
 		std::cout << "1. Roll\n2. Check Score Card\n3. Save and Quit\nINPUT: ";
 		std::cin >> choice;
@@ -649,7 +686,8 @@ void titleshow(scorecard t)
 	std::cout << "|##\\# |# |#  |#     \\# /#  /###   |#_    |#_  _____  _____  _____        " << std::endl;
 	std::cout << "|#\\## |# |#  |#      |#   |#  |#  |###  |### |##### |##### |#####        " << std::endl;
 	std::cout << "|# \\# |# |#  |#      |#   |#  |#  |# |#  |#    /#__ |# =__ |# =__        " << std::endl;
-	std::cout << "|# |#  |##   |#      |#    \\### # |# |#   |# |##### |##### |#####        " << std::endl; t.color("default");
+	std::cout << "|# |#  |##   |#      |#    \\### # |# |#   |# |##### |##### |#####        " << std::endl;
+	std::cout << "==================================================================        " << std::endl; t.color("default");
 	Sleep(500);
 
 }
